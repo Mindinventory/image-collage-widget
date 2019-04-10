@@ -8,7 +8,7 @@ A flutter package for creating photo collages in your applications.
 ## Key Features
 
 * Create 11 different type of collages.
-* Start with or without images from gallery preloaded (Not available for ios).
+* Start with or without images from gallery preloaded (Only for Android).
 * Allow user to add or remove photo into collage.
 * User can update images from gallery/camera.
 * Don't worry about `permissions`, we handled it.
@@ -16,23 +16,27 @@ A flutter package for creating photo collages in your applications.
 
 ## Usage
 
- * Step -1. Prepare AndroidManifest
+ * Step 1:- Prepare AndroidManifest.xml
+ 
+    ```xml
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    ```
 
-    Add the following line to `AndroidManifest.xml`:
+ * Step 2:- Prepare Info.plist
 
-    `<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>`
-    
-    `<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>`
+    ```xml
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>Need to access photo library</string>
+        <key>NSCameraUsageDescription</key>
+        <string>To upload your picture</string>
+    ```
 
- * Step 2:- To use this package, add `image_collage_widget ` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
-
-   *For example:
+ * Step 3:- To use this package, add `image_collage_widget ` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
 
      ```yaml
          dependencies:
-           flutter:
-             sdk: flutter
-
+           ...
            image_collage_widget: ^0.0.1
      ```
 
@@ -58,6 +62,7 @@ A flutter package for creating photo collages in your applications.
 * equatable: ^0.2.3
 
 # LICENSE!
+
 Image Collage Widget is [MIT-licensed](/LICENSE).
 
 
