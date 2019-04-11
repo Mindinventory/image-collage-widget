@@ -3,7 +3,7 @@
 A flutter package for creating photo collages in your applications.
 
 ## Preview
-![image](/media/center_big_fr.png)  ![image](/media/left_big_rf.png)   ![image](/media/v_split_rf.png)
+![image](https://github.com/Mindinventory/image-collage-widget/blob/master/media/center_big_fr.png)  ![image](https://github.com/Mindinventory/image-collage-widget/blob/master/media/left_big_rf.png)   ![image](https://github.com/Mindinventory/image-collage-widget/blob/master/media/v_split_rf.png)
 
 ## Key Features
 
