@@ -19,6 +19,8 @@ A flutter package for creating photo collages in your applications.
  * Step 1:- Prepare AndroidManifest.xml
  
     ```xml
+        <uses-permission android:name="android.permission.CAMERA" />
+
         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
         <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     ```
@@ -37,10 +39,17 @@ A flutter package for creating photo collages in your applications.
      ```yaml
          dependencies:
            ...
-           image_collage_widget: ^0.0.1
+           image_collage_widget: ^0.0.2
      ```
 
+ * Step 4:- Add `ImageCollageWidget` in your dart file
+
    ```dart
+         import 'package:image_collage_widget/image_collage_widget.dart';
+         import 'package:image_collage_widget/utils/collage_type.dart';
+         
+         ...
+         
       /// @param withImage:- If withImage = true, It will load image from given {filePath (default = "Camera")}
       /// @param collageType:- CollageType.CenterBig
 
