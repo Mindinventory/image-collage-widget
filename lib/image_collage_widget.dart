@@ -78,7 +78,7 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
   Widget build(BuildContext context) {
     print("state===> ${_imageListBloc.currentState}");
     return BlocProvider(
-      bloc: _imageListBloc,
+      builder: (BuildContext context) => _imageListBloc,
       child: BlocBuilder(
           bloc: _imageListBloc,
           builder: (context, CollageState state) {

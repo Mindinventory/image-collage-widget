@@ -1,3 +1,8 @@
+## [1.0.0] - 02 October 2019
+
+* Update the dependencies
+* Update the description
+
 ## [0.0.2] - 10 April 2019
 
 * Added 11 different type of collages.
