@@ -3,7 +3,7 @@
 A flutter package for creating photo collages in your applications.
 
 ## Preview
-![image](https://github.com/Mindinventory/image-collage-widget/blob/master/media/center_big_fr.png)  ![image](https://github.com/Mindinventory/image-collage-widget/blob/master/media/left_big_rf.png)   ![image](https://github.com/Mindinventory/image-collage-widget/blob/master/media/v_split_rf.png)
+![image](https://github.com/Mindinventory/image-collage-widget/blob/master/media/center_big_fr.png?raw=true "Title")  ![image](https://github.com/Mindinventory/image-collage-widget/blob/master/media/left_big_rf.png?raw=true "Title")   ![image](https://github.com/Mindinventory/image-collage-widget/blob/master/media/v_split_rf.png?raw=true "Title")
 
 ## Key Features
 
@@ -20,7 +20,6 @@ A flutter package for creating photo collages in your applications.
  
     ```xml
         <uses-permission android:name="android.permission.CAMERA" />
-
         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
         <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     ```

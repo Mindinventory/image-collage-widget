@@ -9,6 +9,7 @@ import 'package:image_collage_widget/utils/CollageType.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+
 import 'image_list_event.dart';
 import 'image_list_state.dart';
 
@@ -111,8 +112,8 @@ class image_list_bloc extends Bloc<image_list_event, image_list_state> {
       int maxImage = maxCount != null ? maxCount : 6;
       var listImage = blankList();
       if (isExist) {
-        List<String> file =
-        await FileManager(root: root.path).filesTree(extensions: [
+        List<File> file =
+        await FileManager(root: root).filesTree(extensions: [
           "jpeg",
           "png",
           "jpg",
@@ -123,7 +124,7 @@ class image_list_bloc extends Bloc<image_list_event, image_list_state> {
         /// [file] by default will return old images.
         /// for getting latest max number of photos [file.sublist(file.length - maxImage, file.length)]
 
-        List<String> files = file.length > maxImage
+        List<File> files = file.length > maxImage
             ? file.sublist(file.length - (maxImage + 1), file.length - 1)
             : file;
         debugPrint("image path-->${files}");
@@ -133,7 +134,7 @@ class image_list_bloc extends Bloc<image_list_event, image_list_state> {
 //          var image = Images();
 //          image.id = i;
 //          image.imageUrl = File(files[i]);
-          listImage[i].imageUrl = File(files[i]);
+          listImage[i].imageUrl = File(files[i].path);
 //          listImage.add(image);
         }
       } else {

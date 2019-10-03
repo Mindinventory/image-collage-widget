@@ -1,24 +1,36 @@
+import 'package:equatable/equatable.dart';
 import 'package:image_collage_widget/model/images.dart';
 import 'package:meta/meta.dart';
-import 'package:equatable/equatable.dart';
 
 @immutable
 abstract class CollageState extends Equatable {
-  CollageState([List props = const []]) : super(props);
+  CollageState([List props = const []]) : super();
 }
 
-class InitialState extends CollageState {}
+class InitialState extends CollageState {
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
+}
 
 class PermissionDeniedState extends CollageState {
 
   @override
   String toString() => 'PermissionDeniedState';
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }
 
 class LoadImageState extends CollageState {
 
   @override
   String toString() => 'LoadImageState';
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }
 
 class ImageListState extends CollageState {
@@ -41,6 +53,10 @@ class ImageListState extends CollageState {
 
   @override
   String toString() => 'ImageListState';
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 
 //  ImageListState copyWith({
 //    List<Images> images

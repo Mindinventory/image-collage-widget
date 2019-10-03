@@ -13,6 +13,10 @@ class CheckPermissionEvent extends CollageEvent {
 
   @override
   String toString() => 'CheckPermissionEvent';
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }
 
 class AskPermissionEvent extends CollageEvent {
@@ -25,6 +29,10 @@ class AskPermissionEvent extends CollageEvent {
 
   @override
   String toString() => 'AskPermissionEvent';
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }
 
 class AllowPermissionEvent extends CollageEvent {
@@ -36,6 +44,10 @@ class AllowPermissionEvent extends CollageEvent {
 
   @override
   String toString() => 'AllowPermissionEvent';
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }
 
 class DenyPermissionEvent extends CollageEvent {
@@ -47,6 +59,10 @@ class DenyPermissionEvent extends CollageEvent {
 
   @override
   String toString() => 'DenyPermissionEvent';
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }
 
 class OpenPickerEvent extends CollageEvent {
@@ -55,6 +71,10 @@ class OpenPickerEvent extends CollageEvent {
   int index = 0;
   OpenPickerEvent(
       this.isFromPicker, this.permissionType, this.index);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }
 
 class ImageListEvent extends CollageEvent {
@@ -64,6 +84,10 @@ class ImageListEvent extends CollageEvent {
 
   @override
   String toString() => 'LoadImageEvent';
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }
 
 class RemoveImageEvent extends CollageEvent {
@@ -73,9 +97,17 @@ class RemoveImageEvent extends CollageEvent {
 
   @override
   String toString() => 'LoadImageEvent';
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }
 
 class Event extends CollageEvent {
   @override
   String toString() => 'LoadImageEvent';
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }
