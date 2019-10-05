@@ -9,8 +9,10 @@ abstract class CollageState extends Equatable {
 
 class InitialState extends CollageState {
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  String toString() => 'InitialState';
+
+  @override
+  List<Object> get props => [];
 }
 
 class PermissionDeniedState extends CollageState {
@@ -19,8 +21,7 @@ class PermissionDeniedState extends CollageState {
   String toString() => 'PermissionDeniedState';
 
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [];
 }
 
 class LoadImageState extends CollageState {
@@ -29,15 +30,12 @@ class LoadImageState extends CollageState {
   String toString() => 'LoadImageState';
 
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [];
 }
 
 class ImageListState extends CollageState {
 
   final List<Images> images;
-
-//  ImageListState(this.images);
 
   ImageListState({
     this.images,
@@ -55,13 +53,6 @@ class ImageListState extends CollageState {
   String toString() => 'ImageListState';
 
   @override
-  // TODO: implement props
-  List<Object> get props => null;
-
-//  ImageListState copyWith({
-//    List<Images> images
-//  }) {
-//    return ImageListState(images ?? this.images);
-//  }
+  List<Object> get props => [images];
 }
 

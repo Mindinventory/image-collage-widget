@@ -12,8 +12,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'collage_event.dart';
-import 'collage_state.dart';
+import 'bloc.dart';
+
 
 class CollageBloc extends Bloc<CollageEvent, CollageState> {
   String path;
@@ -27,14 +27,10 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
 
   @override
   Stream<CollageState> mapEventToState(CollageEvent event) async* {
-    print('event---> $event');
-    print('state---> $currentState');
-
     if (event is CheckPermissionEvent) {
       checkPermission(event.isFromPicker, event.permissionType, event.index);
     }
     if (event is AllowPermissionEvent) {
-      print('permisiionType--->${event.permissionType}');
       if (event.isFromPicker) {
         openPicker(event.permissionType, event.index);
       } else {
@@ -67,11 +63,9 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
             ? Platform.isIOS ? PermissionGroup.photos : PermissionGroup.storage
             : PermissionGroup.camera)
         .then((permissionStatus) {
-      print("permissionStatus===> $permissionStatus");
       if (permissionStatus == PermissionStatus.granted) {
         dispatch(AllowPermissionEvent(isFromPicker, permissionType, index));
       } else {
-        print("permissionStatusChecked===> $permissionStatus");
         dispatch(AskPermissionEvent(isFromPicker, permissionType, index));
       }
     });
@@ -156,11 +150,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
         debugPrint("image path file-->${file}");
 
         for (int i = 0; i < files.length; i++) {
-//          var image = Images();
-//          image.id = i;
-//          image.imageUrl = File(files[i]);
           listImage[i].imageUrl = File(files[i].path);
-//          listImage.add(image);
         }
       } else {
         debugPrint("No directory found.");
