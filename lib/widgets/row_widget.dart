@@ -17,7 +17,6 @@ class GridCollageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("row rebuild --->");
     this.context = context;
     if (imageListBloc.currentState is ImageListState) {
       imageList = (imageListBloc.currentState as ImageListState).images;
@@ -179,21 +178,6 @@ class GridCollageWidget extends StatelessWidget {
           ),
         ));
   }
-
-//  openPicker(bool isForStorage, int index) async {
-//    await ImagePicker.pickImage(
-//        source: isForStorage ? ImageSource.gallery : ImageSource.camera)
-//        .then((image) {
-//      if (image != null) {
-//        var images = Images();
-//        images.imageUrl = image;
-//        var imageList = imageListBloc.currentState.imageList;
-//        imageList.removeAt(index);
-//        imageList.insert(index, images);
-//        imageListBloc.dispatchPickedImageEvent(imageList);
-//      }
-//    });
-//  }
 
   /// @param index:- index of image.
   /// @param isForCrossAxis = if from cross axis count = true
