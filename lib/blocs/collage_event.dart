@@ -2,7 +2,9 @@ import 'package:equatable/equatable.dart';
 import 'package:image_collage_widget/model/images.dart';
 import 'package:image_collage_widget/utils/permission_type.dart';
 
-abstract class CollageEvent extends Equatable {}
+abstract class CollageEvent extends Equatable {
+  CollageEvent([List props = const []]) : super();
+}
 
 class CheckPermissionEvent extends CollageEvent {
   final PermissionType permissionType;
@@ -15,8 +17,7 @@ class CheckPermissionEvent extends CollageEvent {
   String toString() => 'CheckPermissionEvent';
 
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [permissionType, isFromPicker, index];
 }
 
 class AskPermissionEvent extends CollageEvent {
@@ -31,8 +32,7 @@ class AskPermissionEvent extends CollageEvent {
   String toString() => 'AskPermissionEvent';
 
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [permissionType, isFromPicker, index];
 }
 
 class AllowPermissionEvent extends CollageEvent {
@@ -46,8 +46,7 @@ class AllowPermissionEvent extends CollageEvent {
   String toString() => 'AllowPermissionEvent';
 
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [permissionType, isFromPicker, index];
 }
 
 class DenyPermissionEvent extends CollageEvent {
@@ -61,20 +60,7 @@ class DenyPermissionEvent extends CollageEvent {
   String toString() => 'DenyPermissionEvent';
 
   @override
-  // TODO: implement props
-  List<Object> get props => null;
-}
-
-class OpenPickerEvent extends CollageEvent {
-  final PermissionType permissionType;
-  final bool isFromPicker;
-  int index = 0;
-  OpenPickerEvent(
-      this.isFromPicker, this.permissionType, this.index);
-
-  @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [permissionType, isFromPicker, index];
 }
 
 class ImageListEvent extends CollageEvent {
@@ -83,31 +69,9 @@ class ImageListEvent extends CollageEvent {
   ImageListEvent(this.imageList);
 
   @override
-  String toString() => 'LoadImageEvent';
+  String toString() => 'ImageListEvent';
 
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [imageList];
 }
 
-class RemoveImageEvent extends CollageEvent {
-
-  final List<Images> imageList;
-  RemoveImageEvent(this.imageList);
-
-  @override
-  String toString() => 'LoadImageEvent';
-
-  @override
-  // TODO: implement props
-  List<Object> get props => null;
-}
-
-class Event extends CollageEvent {
-  @override
-  String toString() => 'LoadImageEvent';
-
-  @override
-  // TODO: implement props
-  List<Object> get props => null;
-}

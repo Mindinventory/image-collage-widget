@@ -1,5 +1,5 @@
 name: image_collage_widget
-description: A flutter package for creating photo collages in your applications.
+description: A flutter package, that lets you create 11 different types of modern photomontage which allows selecting images from photo library and taking new pictures with the camera.
 version: 1.0.0
 author: Shakti S.P Swain<shakti.swain.mi@gmail.com>
 homepage: https://github.com/Mindinventory/image-collage-widget.git
@@ -12,19 +12,10 @@ dependencies:
     sdk: flutter
 
   flutter_staggered_grid_view: ^0.3.0
-
-  #  for bloc architecture pattern.
   flutter_bloc: ^0.21.0
-
-  # using this for getting device storage path.
   flutter_file_manager: ^0.2.0
-
   permission_handler: ^3.2.2
-
-  # For picking image
   image_picker: ^0.6.1+4
-
-  # For comparing two objects. In this project we are using basically for State and event management of bloc.
   equatable: ^0.6.1
 
 

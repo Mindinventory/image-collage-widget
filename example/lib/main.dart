@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_collage_widget/utils/CollageType.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:test_package/CollageSample.dart';
+import 'src/screens/collage_sample.dart';
+import 'src/tranistions/fade_route_transition.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,21 +26,27 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Directory _directory;
   var color = Colors.white;
 
   @override
   void initState() {
     super.initState();
-    getPath();
-  }
-
-  getPath() async {
-    _directory = await getExternalStorageDirectory();
   }
 
   @override
   Widget build(BuildContext context) {
+
+    Widget buildRaisedButton(CollageType collageType, String text) {
+     return RaisedButton(
+        onPressed: () => pushImageWidget(collageType),
+        shape: buttonShape(),
+        color: color,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(text),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text("Test"),
@@ -52,114 +56,27 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: EdgeInsets.all(16.0),
           shrinkWrap: true,
           children: <Widget>[
-            RaisedButton(
-              onPressed: () => pushImageWidget(CollageType.VSplit),
-              shape: buttonShape(),
-              color: color,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Vsplit"),
-              ),
-            ),
-            RaisedButton(
-              onPressed: () => pushImageWidget(CollageType.HSplit),
-              shape: buttonShape(),
-              color: color,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("HSplit"),
-              ),
-            ),
-            RaisedButton(
-              onPressed: () => pushImageWidget(CollageType.FourSquare),
-              shape: buttonShape(),
-              color: color,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("FourSquare"),
-              ),
-            ),
-            RaisedButton(
-              onPressed: () => pushImageWidget(CollageType.NineSquare),
-              shape: buttonShape(),
-              color: color,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("NineSquare"),
-              ),
-            ),
-            RaisedButton(
-              onPressed: () => pushImageWidget(CollageType.ThreeVertical),
-              shape: buttonShape(),
-              color: color,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("ThreeVertical"),
-              ),
-            ),
-            RaisedButton(
-              onPressed: () => pushImageWidget(CollageType.ThreeHorizontal),
-              color: color,
-              shape: buttonShape(),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("ThreeHorizontal"),
-              ),
-            ),
-            RaisedButton(
-              onPressed: () => pushImageWidget(CollageType.LeftBig),
-              shape: buttonShape(),
-              color: color,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("LeftBig"),
-              ),
-            ),
-            RaisedButton(
-              onPressed: () => pushImageWidget(CollageType.RightBig),
-              shape: buttonShape(),
-              color: color,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("RightBig"),
-              ),
-            ),
-            RaisedButton(
-              onPressed: () => pushImageWidget(CollageType.FourLeftBig),
-              shape:  buttonShape(),
-              color: color,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("FourLeftBig"),
-              ),
-            ),
-            RaisedButton(
-              onPressed: () => pushImageWidget(CollageType.VMiddleTwo),
-              shape:  buttonShape(),
-              color: color,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("VMiddleTwo"),
-              ),
-            ),
-            RaisedButton(
-              onPressed: () => pushImageWidget(CollageType.CenterBig),
-              shape:  buttonShape(),
-              color: color,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("CenterBig"),
-              ),
-            )
+            buildRaisedButton(CollageType.VSplit, 'Vsplit'),
+            buildRaisedButton(CollageType.HSplit, 'HSplit'),
+            buildRaisedButton(CollageType.FourSquare, 'FourSquare'),
+            buildRaisedButton(CollageType.NineSquare, 'NineSquare'),
+            buildRaisedButton(CollageType.ThreeVertical, 'ThreeVertical'),
+            buildRaisedButton(CollageType.ThreeHorizontal, 'ThreeHorizontal'),
+            buildRaisedButton(CollageType.LeftBig, 'LeftBig'),
+            buildRaisedButton(CollageType.RightBig, 'RightBig'),
+            buildRaisedButton(CollageType.FourLeftBig, 'FourLeftBig'),
+            buildRaisedButton(CollageType.VMiddleTwo, 'VMiddleTwo'),
+            buildRaisedButton(CollageType.CenterBig, 'CenterBig'),
           ],
         ),
       ),
     );
   }
 
-  pushImageWidget(CollageType type) {
-    Navigator.push(context,
-        new MaterialPageRoute(builder: (context) => CollageSample(type)));
+  pushImageWidget(CollageType type) async {
+    await Navigator.of(context).push(
+      FadeRouteTransition(page: CollageSample(type)),
+    );
   }
 
   RoundedRectangleBorder buttonShape() {

@@ -5,14 +5,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_collage_widget/blocs/collage_bloc.dart';
-import 'package:image_collage_widget/blocs/collage_event.dart';
-import 'package:image_collage_widget/blocs/collage_state.dart';
 import 'package:image_collage_widget/utils/CollageType.dart';
 import 'package:image_collage_widget/utils/permission_type.dart';
 import 'package:image_collage_widget/widgets/row_widget.dart';
 
-/// A CollageWidget.
+import 'blocs/bloc.dart';
+
+/// A ImageCollageWidget.
 class ImageCollageWidget extends StatefulWidget {
   final String filePath;
   final CollageType collageType;
@@ -49,7 +48,6 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
     WidgetsBinding.instance.addObserver(this);
     _imageListBloc =
         CollageBloc(context: context, path: filePath, collageType: collageType);
-    // Todo :- dispatch initial event.
 
     if (withImage && !Platform.isIOS) {
       _handlePermission();
@@ -62,9 +60,6 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
   Future didChangeAppLifecycleState(AppLifecycleState state) async {
     _appLifecycleState = state;
     debugPrint("app state---> $_appLifecycleState");
-//    if (AppLifecycleState.resumed == state && withImage) {
-//      _imageListBloc.checkPermissionOnResume();
-//    }
   }
 
   @override
@@ -76,7 +71,6 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
 
   @override
   Widget build(BuildContext context) {
-    print("state===> ${_imageListBloc.currentState}");
     return BlocProvider(
       builder: (BuildContext context) => _imageListBloc,
       child: BlocBuilder(
@@ -87,7 +81,6 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-//                    AssetImage('icons/heart.png', scale: 1.5, package: 'my_icons'),
                     Text(
                         "To show images you have to allow storage permission."),
                     FlatButton(
@@ -130,47 +123,3 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
     );
   }
 }
-
-//  @override
-//  Widget build(BuildContext context) {
-//    return BlocProvider(
-//      bloc: _imageListBloc,
-//      child: BlocBuilder(
-//          bloc: _imageListBloc,
-//          builder: (context, image_list_state state) {
-//            return Container(
-//              child: withImage
-//                  ? state.permissions.isNotEmpty && state.permissions.contains(STORAGE_PERMISSION)
-//                      ? state.isImageLoadedStarted
-//                          ? Center(
-//                              child: const CircularProgressIndicator(),
-//                            )
-//                          : _gridView()
-//
-////              AnimatedCrossFade(
-////                firstCurve: Curves.easeInToLinear,
-////                alignment: Alignment.center,
-////                firstChild: Center(child: const CircularProgressIndicator( strokeWidth: 2.0, semanticsLabel: "Please wait",)),
-////                secondChild: _gridView(state.imageList),
-////                crossFadeState: (state.isImageLoaded)
-////                    ? CrossFadeState.showFirst
-////                    : CrossFadeState.showSecond,
-////                duration: Duration(milliseconds: 1000),
-////              )
-//                      : Center(
-//                          child: Column(
-//                            children: <Widget>[
-//                              Text("To show images you have to allow storage permission."),
-//                              RaisedButton(
-//                                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(10.0)),
-//                                child: Text("Allow"),
-//                                onPressed: () => _handlePermission(),
-//                              ),
-//                            ],
-//                          ),
-//                        )
-//                  : _gridView(),
-//            );
-//          }),
-//    );
-//  }

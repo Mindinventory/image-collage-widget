@@ -24,17 +24,10 @@ class CollageSample extends StatefulWidget {
 class _CollageSample extends State<CollageSample> {
   var globalKey = GlobalKey(debugLabel: "screenShotKey");
   ScreenshotController _screenshotController = ScreenshotController();
-  Directory _directory;
-
-  /// for getting the path of external directory.
-  getPath() async {
-    _directory = await getExternalStorageDirectory();
-  }
 
   @override
   void initState() {
     super.initState();
-    getPath();
   }
 
   @override
