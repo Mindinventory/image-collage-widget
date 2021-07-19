@@ -3,47 +3,51 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:image_collage_widget/blocs/collage_bloc.dart';
 import 'package:image_collage_widget/blocs/collage_state.dart';
 import 'package:image_collage_widget/model/images.dart';
-import 'package:image_collage_widget/utils/CollageType.dart';
+import 'package:image_collage_widget/utils/collage_type.dart';
+
+import 'package:image_collage_widget/utils/extensions.dart';
 import 'package:image_collage_widget/utils/permission_type.dart';
 
-class GridCollageWidget extends StatelessWidget {
-  var imageList = List<Images>();
+class GridCollageWidget extends StatefulWidget {
   final CollageType collageType;
   final CollageBloc imageListBloc;
 
   GridCollageWidget(this.collageType, this.imageListBloc);
 
-  BuildContext context;
+  @override
+  _GridCollageWidgetState createState() => _GridCollageWidgetState();
+}
+
+class _GridCollageWidgetState extends State<GridCollageWidget> {
+  List<Images> imageList = <Images>[];
 
   @override
   Widget build(BuildContext context) {
-    this.context = context;
-    if (imageListBloc.currentState is ImageListState) {
-      imageList = (imageListBloc.currentState as ImageListState).images;
+    if (widget.imageListBloc.state is ImageListState) {
+      imageList = (widget.imageListBloc.state as ImageListState).images;
       return StaggeredGridView.countBuilder(
           shrinkWrap: false,
           itemCount: imageList.length,
-          crossAxisCount: getCrossAxisCount(collageType),
+          crossAxisCount: getCrossAxisCount(widget.collageType),
           primary: true,
           itemBuilder: (BuildContext context, int index) => buildRow(index),
           staggeredTileBuilder: (int index) => StaggeredTile.count(
               getCellCount(
-                  index: index, isForCrossAxis: true, type: collageType),
+                  index: index, isForCrossAxis: true, type: widget.collageType),
               getCellCount(
-                  index: index, isForCrossAxis: false, type: collageType)));
+                  index: index, isForCrossAxis: false, type: widget.collageType)));
     }
+    return Container();
   }
 
-  buildRow(int index) {
+  Widget buildRow(int index) {
     return Stack(
       fit: StackFit.expand,
-//      splashColor: Colors.blue[100],
-//      highlightColor: Colors.blue[200],
-//      onTap: () => showDialogImage(index),
       children: <Widget>[
         Positioned.fill(
           bottom: 0.0,
           child: Container(
+            color: Colors.transparent,
             child: imageList[index].imageUrl != null
                 ? Image.file(
               imageList[index].imageUrl,
@@ -60,18 +64,17 @@ class GridCollageWidget extends StatelessWidget {
           ),
         ),
         Positioned.fill(
-            child: new Material(
+            child: Material(
                 borderRadius: BorderRadius.all(Radius.circular(5)),
                 color: Colors.transparent,
-                child: new InkWell(
-                  highlightColor: Colors.transparent,
+                child: GestureDetector(
                   onTap: () => showDialogImage(index),
                 ))),
       ],
     );
   }
 
-  imagePickerDialog(int index) {
+  void imagePickerDialog(int index) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -82,7 +85,7 @@ class GridCollageWidget extends StatelessWidget {
                 children: <Widget>[
                   buildDialogOption(index, isForStorage: false),
                   buildDialogOption(index),
-                  (imageListBloc.currentState as ImageListState)
+                  (widget.imageListBloc.state as ImageListState)
                       .images[index]
                       .imageUrl !=
                       null
@@ -92,18 +95,19 @@ class GridCollageWidget extends StatelessWidget {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   dismissDialog();
                 },
-                child: Text("Cancel"),
+                style: ButtonStyle().flatButton,
+                child: Text('Cancel'),
               )
             ],
           );
         });
   }
 
-  showDialogImage(int index) {
+  void showDialogImage(int index) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -112,7 +116,7 @@ class GridCollageWidget extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: new BorderRadius.only(
+                  borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(10.0),
                       topRight: const Radius.circular(10.0))),
               child: Padding(
@@ -123,7 +127,7 @@ class GridCollageWidget extends StatelessWidget {
                   children: <Widget>[
                     buildDialogOption(index, isForStorage: false),
                     buildDialogOption(index),
-                    (imageListBloc.currentState as ImageListState)
+                    (widget.imageListBloc.state as ImageListState)
                         .images[index]
                         .imageUrl !=
                         null
@@ -137,18 +141,19 @@ class GridCollageWidget extends StatelessWidget {
         });
   }
 
-  dismissDialog() {
+  void dismissDialog() {
     Navigator.of(context, rootNavigator: true).pop(true);
   }
 
   Widget buildDialogOption(int index,
       {bool isForStorage = true, bool isForRemovePhoto = false}) {
-    return FlatButton(
+    return TextButton(
+        style: ButtonStyle().flatButton,
         onPressed: () {
           dismissDialog();
           isForRemovePhoto
-              ? imageListBloc.dispatchRemovePhotoEvent(index)
-              : imageListBloc.dispatchCheckPermissionEvent(
+              ? widget.imageListBloc.dispatchRemovePhotoEvent(index)
+              : widget.imageListBloc.dispatchCheckPermissionEvent(
               permissionType: isForStorage
                   ? PermissionType.Storage
                   : PermissionType.Camera,
@@ -172,8 +177,8 @@ class GridCollageWidget extends StatelessWidget {
                 ),
               ),
               Text(isForRemovePhoto
-                  ? "Remove"
-                  : isForStorage ? "Gallery" : "Camera")
+                  ? 'Remove'
+                  : isForStorage ? 'Gallery' : 'Camera')
             ],
           ),
         ));
@@ -183,34 +188,32 @@ class GridCollageWidget extends StatelessWidget {
   /// @param isForCrossAxis = if from cross axis count = true
   /// Note:- If row == column then crossAxisCount = row*column // rowCount or columnCount
   /// e.g. row = 3 and column = 3 then crossAxisCount = 3*3(9) or 3
-  getCellCount(
-      {@required int index, bool isForCrossAxis, @required CollageType type}) {
+  int getCellCount(
+      {@required int index, @required CollageType type, bool isForCrossAxis}) {
     /// total cell count :- 2
     /// Column and Row :- 2*1 = 2 (Cross axis count)
 
     if (type == CollageType.VSplit) {
-      if (isForCrossAxis)
-
+      if (isForCrossAxis) {
         /// Cross axis cell count
         return 1;
-      else
-
+      } else {
         /// Main axis cell count
         return 2;
+      }
     }
 
     /// total cell count :- 2
     /// Column and Row :- 1*2 = 2 (Cross axis count)
 
     else if (type == CollageType.HSplit) {
-      if (isForCrossAxis)
-
+      if (isForCrossAxis) {
         /// Cross axis cell count
         return 2;
-      else
-
+      } else {
         /// Main axis cell count
         return 1;
+      }
     }
 
     /// total cell count :- 4
@@ -233,13 +236,15 @@ class GridCollageWidget extends StatelessWidget {
     else if (type == CollageType.ThreeVertical) {
       if (isForCrossAxis) {
         return 1;
-      } else
+      } else {
         return (index == 0) ? 2 : 1;
+      }
     } else if (type == CollageType.ThreeHorizontal) {
       if (isForCrossAxis) {
         return (index == 0) ? 2 : 1;
-      } else
+      } else {
         return 1;
+      }
     }
 
     /// total cell count :- 6
@@ -250,18 +255,21 @@ class GridCollageWidget extends StatelessWidget {
     else if (type == CollageType.LeftBig) {
       if (isForCrossAxis) {
         return (index == 0) ? 2 : 1;
-      } else
+      } else {
         return (index == 0) ? 2 : 1;
+      }
     } else if (type == CollageType.RightBig) {
       if (isForCrossAxis) {
         return (index == 1) ? 2 : 1;
-      } else
+      } else {
         return (index == 1) ? 2 : 1;
+      }
     } else if (type == CollageType.FourLeftBig) {
       if (isForCrossAxis) {
         return (index == 0) ? 2 : 1;
-      } else
+      } else {
         return (index == 0) ? 3 : 1;
+      }
 
       /// total tile count (image count)--> 7
       /// Column: Row (2:3)
@@ -274,8 +282,9 @@ class GridCollageWidget extends StatelessWidget {
     } else if (type == CollageType.VMiddleTwo) {
       if (isForCrossAxis) {
         return 6;
-      } else
+      } else {
         return (index == 0 || index == 3 || index == 5) ? 4 : 3;
+      }
     }
 
     /// total tile count (image count)--> 7
@@ -291,26 +300,32 @@ class GridCollageWidget extends StatelessWidget {
     else if (type == CollageType.CenterBig) {
       if (isForCrossAxis) {
         return (index == 1) ? 6 : 3;
-      } else
+      } else {
         return (index == 1) ? 12 : 4;
+      }
+    } else {
+      return 0;
     }
   }
 
-  getCrossAxisCount(CollageType type) {
+  int getCrossAxisCount(CollageType type) {
     if (type == CollageType.HSplit ||
         type == CollageType.VSplit ||
         type == CollageType.ThreeHorizontal ||
-        type == CollageType.ThreeVertical)
+        type == CollageType.ThreeVertical) {
       return 2;
-    else if (type == CollageType.FourSquare)
+    } else if (type == CollageType.FourSquare) {
       return 4;
-    else if (type == CollageType.NineSquare)
+    } else if (type == CollageType.NineSquare) {
       return 9;
-    else if (type == CollageType.LeftBig || type == CollageType.RightBig)
+    } else if (type == CollageType.LeftBig || type == CollageType.RightBig) {
       return 3;
-    else if (type == CollageType.FourLeftBig)
+    } else if (type == CollageType.FourLeftBig) {
       return 3;
-    else if (type == CollageType.VMiddleTwo || type == CollageType.CenterBig)
+    } else if (type == CollageType.VMiddleTwo || type == CollageType.CenterBig) {
       return 12;
+    } else {
+      return 0;
+    }
   }
 }

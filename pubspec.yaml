@@ -5,23 +5,24 @@ author: Shakti S.P Swain<shakti.swain.mi@gmail.com>
 homepage: https://github.com/Mindinventory/image-collage-widget.git
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.8.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
   flutter_staggered_grid_view: ^0.3.0
-  flutter_bloc: ^0.21.0
+  flutter_bloc: ^7.0.1
   flutter_file_manager: ^0.2.0
   permission_handler: ^3.2.2
   image_picker: ^0.6.1+4
-  equatable: ^0.6.1
+  equatable: ^1.2.6
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  pedantic: ^1.9.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

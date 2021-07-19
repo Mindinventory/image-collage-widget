@@ -9,58 +9,58 @@ abstract class CollageEvent extends Equatable {
 class CheckPermissionEvent extends CollageEvent {
   final PermissionType permissionType;
   final bool isFromPicker;
-  int index = 0;
+  final int permissionIndex;
 
-  CheckPermissionEvent(this.isFromPicker, this.permissionType, this.index);
+  CheckPermissionEvent({this.isFromPicker, this.permissionType, this.permissionIndex = 0});
 
   @override
   String toString() => 'CheckPermissionEvent';
 
   @override
-  List<Object> get props => [permissionType, isFromPicker, index];
+  List<Object> get props => [permissionType, isFromPicker, permissionIndex];
 }
 
 class AskPermissionEvent extends CollageEvent {
 
   final PermissionType permissionType;
   final bool isFromPicker;
-  int index = 0;
-  AskPermissionEvent(
-       this.isFromPicker, this.permissionType, this.index);
+  final int permissionIndex;
+  AskPermissionEvent({
+       this.isFromPicker, this.permissionType, this.permissionIndex = 0});
 
   @override
   String toString() => 'AskPermissionEvent';
 
   @override
-  List<Object> get props => [permissionType, isFromPicker, index];
+  List<Object> get props => [permissionType, isFromPicker, permissionIndex];
 }
 
 class AllowPermissionEvent extends CollageEvent {
   final PermissionType permissionType;
   final bool isFromPicker;
-  int index = 0;
-  AllowPermissionEvent(
-      this.isFromPicker, this.permissionType, this.index);
+  final int permissionIndex;
+  AllowPermissionEvent({
+      this.isFromPicker, this.permissionType, this.permissionIndex = 0});
 
   @override
   String toString() => 'AllowPermissionEvent';
 
   @override
-  List<Object> get props => [permissionType, isFromPicker, index];
+  List<Object> get props => [permissionType, isFromPicker, permissionIndex];
 }
 
 class DenyPermissionEvent extends CollageEvent {
   final PermissionType permissionType;
   final bool isFromPicker;
-  int index = 0;
-  DenyPermissionEvent(
-      this.isFromPicker, this.permissionType, this.index);
+  final int permissionIndex;
+  DenyPermissionEvent({
+      this.isFromPicker, this.permissionType, this.permissionIndex = 0});
 
   @override
   String toString() => 'DenyPermissionEvent';
 
   @override
-  List<Object> get props => [permissionType, isFromPicker, index];
+  List<Object> get props => [permissionType, isFromPicker, permissionIndex];
 }
 
 class ImageListEvent extends CollageEvent {

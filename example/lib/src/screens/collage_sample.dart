@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:image_collage_widget/image_collage_widget.dart';
-import 'package:image_collage_widget/utils/CollageType.dart';
+import 'package:image_collage_widget/utils/collage_type.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 

@@ -5,8 +5,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_collage_widget/utils/CollageType.dart';
+import 'package:image_collage_widget/utils/collage_type.dart';
 import 'package:image_collage_widget/utils/permission_type.dart';
+import 'package:image_collage_widget/utils/extensions.dart';
 import 'package:image_collage_widget/widgets/row_widget.dart';
 
 import 'blocs/bloc.dart';
@@ -33,11 +34,11 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
 
   String filePath;
   final CollageType collageType;
-  var withImage = false;
+  bool withImage = false;
 
   CollageBloc _imageListBloc;
   AppLifecycleState _appLifecycleState;
-  var isFromPermissionButton = false;
+  bool isFromPermissionButton = false;
 
   @override
   void initState() {
@@ -52,61 +53,56 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
     if (withImage && !Platform.isIOS) {
       _handlePermission();
     } else {
-      _imageListBloc.dispatch(ImageListEvent(_imageListBloc.blankList()));
+      _imageListBloc.add(ImageListEvent(_imageListBloc.blankList()));
     }
   }
 
   @override
   Future didChangeAppLifecycleState(AppLifecycleState state) async {
     _appLifecycleState = state;
-    debugPrint("app state---> $_appLifecycleState");
+    debugPrint('app state---> $_appLifecycleState');
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _imageListBloc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      builder: (BuildContext context) => _imageListBloc,
-      child: BlocBuilder(
-          bloc: _imageListBloc,
-          builder: (context, CollageState state) {
-            if (state is PermissionDeniedState) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                        "To show images you have to allow storage permission."),
-                    FlatButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
-                      child: Text("Allow"),
-                      onPressed: () => _handlePermission(),
-                    ),
-                  ],
-                ),
-              );
-            }
+    return BlocBuilder(
+        bloc: _imageListBloc,
+        builder: (context, CollageState state) {
+          if (state is PermissionDeniedState) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                      'To show images you have to allow storage permission.'),
+                  TextButton(
+                    style: ButtonStyle().flatButton,
+                    child: Text('Allow'),
+                    onPressed: _handlePermission,
+                  ),
+                ],
+              ),
+            );
+          }
 
-            if (state is LoadImageState) {
-              return Center(
-                child: const CircularProgressIndicator(),
-              );
-            }
+          if (state is LoadImageState) {
+            return Center(
+              child: const CircularProgressIndicator(),
+            );
+          }
 
-            if (state is ImageListState) {
-              return _gridView();
-            }
+          if (state is ImageListState) {
+            return _gridView();
+          }
 
-            return Container();
-          }),
-    );
+          return Container();
+        });
   }
 
   void _handlePermission() {
@@ -117,9 +113,7 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
   Widget _gridView() {
     return AspectRatio(
       aspectRatio: 1.0 / 1.0,
-      child: Container(
-        child: GridCollageWidget(collageType, _imageListBloc),
-      ),
+      child: GridCollageWidget(collageType, _imageListBloc),
     );
   }
 }

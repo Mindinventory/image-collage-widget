@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_file_manager/flutter_file_manager.dart';
 import 'package:image_collage_widget/model/images.dart';
-import 'package:image_collage_widget/utils/CollageType.dart';
+import 'package:image_collage_widget/utils/collage_type.dart';
 import 'package:image_collage_widget/utils/permission_type.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -20,27 +20,29 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   final CollageType collageType;
   final BuildContext context;
 
-  CollageBloc({@required this.context, @required this.collageType, this.path});
+  CollageBloc({@required this.context, @required this.collageType, this.path})
+      : assert(context != null),
+        assert(collageType != null),
+        super(null);
 
-  @override
   CollageState get initialState => InitialState();
 
   @override
   Stream<CollageState> mapEventToState(CollageEvent event) async* {
     if (event is CheckPermissionEvent) {
-      checkPermission(event.isFromPicker, event.permissionType, event.index);
+      checkPermission(event.isFromPicker, event.permissionType, event.permissionIndex);
     }
     if (event is AllowPermissionEvent) {
       if (event.isFromPicker) {
-        openPicker(event.permissionType, event.index);
+        openPicker(event.permissionType, event.permissionIndex);
       } else {
         yield LoadImageState();
-        loadImages(path, getImageCount());
+        await loadImages(path, getImageCount());
       }
     }
 
     if (event is AskPermissionEvent) {
-      askPermission(event.isFromPicker, event.permissionType, event.index);
+      askPermission(event.isFromPicker, event.permissionType, event.permissionIndex);
     }
 
     if (event is DenyPermissionEvent) {
@@ -56,17 +58,17 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     }
   }
 
-  checkPermission(
+  void checkPermission(
       bool isFromPicker, PermissionType permissionType, int index) async {
-    PermissionHandler()
+    await PermissionHandler()
         .checkPermissionStatus(permissionType == PermissionType.Storage
             ? Platform.isIOS ? PermissionGroup.photos : PermissionGroup.storage
             : PermissionGroup.camera)
         .then((permissionStatus) {
       if (permissionStatus == PermissionStatus.granted) {
-        dispatch(AllowPermissionEvent(isFromPicker, permissionType, index));
+        add(AllowPermissionEvent(isFromPicker: isFromPicker, permissionType: permissionType, permissionIndex: index));
       } else {
-        dispatch(AskPermissionEvent(isFromPicker, permissionType, index));
+        add(AskPermissionEvent(isFromPicker: isFromPicker, permissionType: permissionType, permissionIndex: index));
       }
     });
   }
@@ -75,24 +77,27 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
       {@required PermissionType permissionType,
       bool isFromPicker = false,
       int index = -1}) {
-    dispatch(CheckPermissionEvent(isFromPicker, permissionType, index));
+    add(CheckPermissionEvent(
+        isFromPicker: isFromPicker,
+        permissionType: permissionType,
+        permissionIndex: index));
   }
 
-  openPicker(PermissionType permissionType, int index) async {
+  void openPicker(PermissionType permissionType, int index) async {
     await ImagePicker.pickImage(
             source: permissionType == PermissionType.Storage
                 ? ImageSource.gallery
                 : ImageSource.camera)
         .then((image) {
       if (image != null) {
-        var imageList = (currentState as ImageListState).copyWith().images;
+        var imageList = (state as ImageListState).copyWith().images;
         imageList[index].imageUrl = image;
-        dispatch(ImageListEvent(imageList));
+        add(ImageListEvent(imageList));
       }
     });
   }
 
-  askPermission(
+  void askPermission(
       bool isFromPicker, PermissionType permissionType, int index) async {
     bool isForStorage = permissionType == PermissionType.Storage;
     await PermissionHandler().requestPermissions([
@@ -106,17 +111,17 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
                   : PermissionGroup.storage
               : PermissionGroup.camera] ==
           PermissionStatus.granted) {
-        dispatch(AllowPermissionEvent(isFromPicker, permissionType, index));
+        add(AllowPermissionEvent(isFromPicker: isFromPicker, permissionType: permissionType, permissionIndex: index));
       } else {
-        dispatch(DenyPermissionEvent(isFromPicker, permissionType, index));
+        add(DenyPermissionEvent(isFromPicker: isFromPicker, permissionType: permissionType, permissionIndex: index));
       }
     });
   }
 
-  dispatchRemovePhotoEvent(int index) {
-    var imageList = (currentState as ImageListState).copyWith().images;
+  void dispatchRemovePhotoEvent(int index) {
+    var imageList = (state as ImageListState).copyWith().images;
     imageList[index].imageUrl = null;
-    dispatch(ImageListEvent(imageList));
+    add(ImageListEvent(imageList));
   }
 
   /// To load photos from device.
@@ -125,17 +130,17 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   /// @param maxCount:- Maximum number of photos will return.
   Future loadImages(String path, int maxCount) async {
     var filePath = await getExternalStorageDirectory();
-    var root = Directory(path != null ? path : '${filePath.path}/DCIM/Camera');
+    var root = Directory(path ?? '${filePath.path}/DCIM/Camera');
 
     await root.exists().then((isExist) async {
-      int maxImage = maxCount != null ? maxCount : 6;
+      int maxImage = maxCount ?? 6;
       var listImage = blankList();
       if (isExist) {
         List<File> file =
         await FileManager(root: root).filesTree(extensions: [
-          "jpeg",
-          "png",
-          "jpg",
+          'jpeg',
+          'png',
+          'jpg',
         ]);
 
         debugPrint('file length---> ${file.length}');
@@ -146,22 +151,22 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
         List<File> files = file.length > maxImage
             ? file.sublist(file.length - (maxImage + 1), file.length - 1)
             : file;
-        debugPrint("image path-->${files}");
-        debugPrint("image path file-->${file}");
+        debugPrint('image path-->$files');
+        debugPrint('image path file-->$file');
 
         for (int i = 0; i < files.length; i++) {
           listImage[i].imageUrl = File(files[i].path);
         }
       } else {
-        debugPrint("No directory found.");
+        debugPrint('No directory found.');
       }
 
-      dispatch(ImageListEvent(listImage));
+      add(ImageListEvent(listImage));
     });
   }
 
   List<Images> blankList() {
-    var imageList = List<Images>();
+    var imageList = <Images>[];
     for (int i = 0; i < getImageCount(); i++) {
       var images = Images();
       images.id = i + 1;
@@ -172,28 +177,32 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   }
 
   /// The no. of image return as per collage type.
-  getImageCount() {
-    if (collageType == CollageType.HSplit || collageType == CollageType.VSplit)
+  int getImageCount() {
+    if (collageType == CollageType.HSplit || collageType == CollageType.VSplit) {
       return 2;
-    else if (collageType == CollageType.FourSquare ||
-        collageType == CollageType.FourLeftBig)
+    } else if (collageType == CollageType.FourSquare ||
+        collageType == CollageType.FourLeftBig) {
       return 4;
-    else if (collageType == CollageType.NineSquare)
+    } else if (collageType == CollageType.NineSquare) {
       return 9;
-    else if (collageType == CollageType.ThreeVertical ||
-        collageType == CollageType.ThreeHorizontal)
+    } else if (collageType == CollageType.ThreeVertical ||
+        collageType == CollageType.ThreeHorizontal) {
       return 3;
-    else if (collageType == CollageType.LeftBig ||
-        collageType == CollageType.RightBig)
+    } else if (collageType == CollageType.LeftBig ||
+        collageType == CollageType.RightBig) {
       return 6;
-    else if (collageType == CollageType.VMiddleTwo ||
-        collageType == CollageType.CenterBig) return 7;
+    } else if (collageType == CollageType.VMiddleTwo ||
+        collageType == CollageType.CenterBig) {
+      return 7;
+    } else {
+      return 0;
+    }
   }
 
-  showSnackBar({String msg = "Permission Denied."}) {
-    Scaffold.of(context).showSnackBar(SnackBar(
+  void showSnackBar({String msg = 'Permission Denied.'}) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(msg),
       duration: Duration(milliseconds: 1000),
-    ));
+    ),);
   }
 }
