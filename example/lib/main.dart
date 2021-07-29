@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:image_collage_widget/utils/collage_type.dart';
 import 'src/screens/collage_sample.dart';
@@ -49,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text("Test"),
+        title: Text('Test'),
       ),
       body: Center(
         child: ListView(
@@ -73,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  pushImageWidget(CollageType type) async {
+  void pushImageWidget(CollageType type) async {
     await Navigator.of(context).push(
       FadeRouteTransition(page: CollageSample(type)),
     );
@@ -81,6 +82,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   RoundedRectangleBorder buttonShape() {
     return RoundedRectangleBorder(
-        borderRadius: new BorderRadius.circular(10.0));
+        borderRadius: BorderRadius.circular(10.0));
   }
 }

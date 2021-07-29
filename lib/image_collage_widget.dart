@@ -14,12 +14,12 @@ import 'blocs/bloc.dart';
 
 /// A ImageCollageWidget.
 class ImageCollageWidget extends StatefulWidget {
-  final String filePath;
+  final String? filePath;
   final CollageType collageType;
   final bool withImage;
 
   const ImageCollageWidget(
-      {Key key, this.filePath, this.collageType, this.withImage})
+      {required this.collageType, Key? key, this.filePath, this.withImage = false})
       : super(key: key);
 
   @override
@@ -30,23 +30,22 @@ class ImageCollageWidget extends StatefulWidget {
 
 class _ImageCollageWidget extends State<ImageCollageWidget>
     with WidgetsBindingObserver {
-  _ImageCollageWidget({this.filePath, this.collageType});
+  _ImageCollageWidget({required this.collageType, this.filePath});
 
-  String filePath;
+  String? filePath;
   final CollageType collageType;
   bool withImage = false;
 
-  CollageBloc _imageListBloc;
-  AppLifecycleState _appLifecycleState;
+  late CollageBloc _imageListBloc;
   bool isFromPermissionButton = false;
 
   @override
   void initState() {
     super.initState();
 
-    withImage = widget.withImage ?? false;
+    withImage = widget.withImage;
 
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     _imageListBloc =
         CollageBloc(context: context, path: filePath, collageType: collageType);
 
@@ -58,14 +57,8 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
   }
 
   @override
-  Future didChangeAppLifecycleState(AppLifecycleState state) async {
-    _appLifecycleState = state;
-    debugPrint('app state---> $_appLifecycleState');
-  }
-
-  @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
@@ -73,7 +66,7 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
   Widget build(BuildContext context) {
     return BlocBuilder(
         bloc: _imageListBloc,
-        builder: (context, CollageState state) {
+        builder: (context, CollageState? state) {
           if (state is PermissionDeniedState) {
             return Center(
               child: Column(

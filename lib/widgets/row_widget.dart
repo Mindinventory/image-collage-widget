@@ -35,7 +35,10 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
               getCellCount(
                   index: index, isForCrossAxis: true, type: widget.collageType),
               getCellCount(
-                  index: index, isForCrossAxis: false, type: widget.collageType)));
+                index: index,
+                isForCrossAxis: false,
+                type: widget.collageType,
+              ).toDouble()));
     }
     return Container();
   }
@@ -50,7 +53,7 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
             color: Colors.transparent,
             child: imageList[index].imageUrl != null
                 ? Image.file(
-              imageList[index].imageUrl,
+              imageList[index].imageUrl!,
               fit: BoxFit.cover,
             )
                 : const Padding(
@@ -189,7 +192,7 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
   /// Note:- If row == column then crossAxisCount = row*column // rowCount or columnCount
   /// e.g. row = 3 and column = 3 then crossAxisCount = 3*3(9) or 3
   int getCellCount(
-      {@required int index, @required CollageType type, bool isForCrossAxis}) {
+      {required int index, required CollageType type, required bool isForCrossAxis}) {
     /// total cell count :- 2
     /// Column and Row :- 2*1 = 2 (Cross axis count)
 

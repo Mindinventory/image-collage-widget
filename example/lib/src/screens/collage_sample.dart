@@ -22,7 +22,7 @@ class CollageSample extends StatefulWidget {
 }
 
 class _CollageSample extends State<CollageSample> {
-  var globalKey = GlobalKey(debugLabel: "screenShotKey");
+  var globalKey = GlobalKey(debugLabel: 'screenShotKey');
   ScreenshotController _screenshotController = ScreenshotController();
 
   @override
@@ -42,19 +42,17 @@ class _CollageSample extends State<CollageSample> {
             ),
           ),
           title: Text(
-            "Collage maker",
+            'Collage maker',
             style: TextStyle(
                 fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
           ),
           actions: <Widget>[
             GestureDetector(
-              onTap: () {
-                _captureImage();
-              },
+              onTap: _captureImage,
               child: Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: Center(
-                  child: Text("Share",
+                  child: Text('Share',
                       style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
@@ -79,15 +77,15 @@ class _CollageSample extends State<CollageSample> {
   }
 
   /// call this method to share file
-  _shareScreenShot(String imgpath) async {
+  void _shareScreenShot(String imgPath) async {
     final Email email = Email(
-      attachmentPath: imgpath,
+      attachmentPaths: [imgPath],
     );
 
     await FlutterEmailSender.send(email);
   }
 
-  _captureImage() async {
+  void _captureImage() async {
     var directory;
 
     if (Platform.isIOS) {
@@ -99,12 +97,14 @@ class _CollageSample extends State<CollageSample> {
     }
     String fileName = DateTime.now().toIso8601String();
     String path = '$directory/$fileName.png';
-    debugPrint("saved screenshot path: " + path);
-    _screenshotController.capture(path: path).then((File image) {
-      ///Capture Done`
-      debugPrint("saved screenshot path1: " + image.path);
+    debugPrint('saved screenshot path: $path');
+    await _screenshotController.captureAndSave(directory, fileName: '$fileName.png').then((String? image) {
+      if(image != null) {
+        ///Capture Done`
+        debugPrint('saved screenshot path1: $image' );
 
-      _shareScreenShot(image.path);
+        _shareScreenShot(image);
+      }
     }).catchError((onError) {
       debugPrint(onError);
     });

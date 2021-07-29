@@ -38,11 +38,11 @@ class ImageListState extends CollageState {
   final List<Images> images;
 
   ImageListState({
-    this.images,
+    this.images = const [],
   }) : super([images]);
 
   ImageListState copyWith({
-    List<Images> images,
+    List<Images>? images,
   }) {
     return ImageListState(
       images: images ?? this.images,
