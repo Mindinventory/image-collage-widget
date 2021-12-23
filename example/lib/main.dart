@@ -27,6 +27,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var color = Colors.white;
+  List<GlobalKey> globalKeys = [];
+
 
   @override
   void initState() {
@@ -36,9 +38,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
-    Widget buildRaisedButton(CollageType collageType, String text) {
+    Widget buildRaisedButton(CollageType collageType, String text, GlobalKey<State<StatefulWidget>> globalKey) {
      return RaisedButton(
-        onPressed: () => pushImageWidget(collageType),
+        onPressed: () => pushImageWidget(collageType,globalKey),
         shape: buttonShape(),
         color: color,
         child: Padding(
@@ -47,35 +49,40 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Test"),
-      ),
-      body: Center(
-        child: ListView(
-          padding: EdgeInsets.all(16.0),
-          shrinkWrap: true,
-          children: <Widget>[
-            buildRaisedButton(CollageType.VSplit, 'Vsplit'),
-            buildRaisedButton(CollageType.HSplit, 'HSplit'),
-            buildRaisedButton(CollageType.FourSquare, 'FourSquare'),
-            buildRaisedButton(CollageType.NineSquare, 'NineSquare'),
-            buildRaisedButton(CollageType.ThreeVertical, 'ThreeVertical'),
-            buildRaisedButton(CollageType.ThreeHorizontal, 'ThreeHorizontal'),
-            buildRaisedButton(CollageType.LeftBig, 'LeftBig'),
-            buildRaisedButton(CollageType.RightBig, 'RightBig'),
-            buildRaisedButton(CollageType.FourLeftBig, 'FourLeftBig'),
-            buildRaisedButton(CollageType.VMiddleTwo, 'VMiddleTwo'),
-            buildRaisedButton(CollageType.CenterBig, 'CenterBig'),
-          ],
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Test"),
+        ),
+        body: Center(
+          child: ListView.builder(
+            itemCount: 11,
+          itemBuilder: (context,index){
+            return  Column(
+              children: [
+                buildRaisedButton(CollageType.VSplit, 'Vsplit',GlobalKey(debugLabel: 'VsplitKey')),
+                buildRaisedButton(CollageType.HSplit, 'HSplit',GlobalKey(debugLabel: 'HSplitKey')),
+                buildRaisedButton(CollageType.FourSquare, 'FourSquare',GlobalKey(debugLabel: 'FourSquareKey')),
+                buildRaisedButton(CollageType.NineSquare, 'NineSquare',GlobalKey(debugLabel: 'NineSquareKey')),
+                buildRaisedButton(CollageType.ThreeVertical, 'ThreeVertical',GlobalKey(debugLabel: 'ThreeVerticalKey')),
+                buildRaisedButton(CollageType.ThreeHorizontal, 'ThreeHorizontal',GlobalKey(debugLabel: 'ThreeHorizontalKey')),
+                buildRaisedButton(CollageType.LeftBig, 'LeftBig',GlobalKey(debugLabel: 'LeftBigKey')),
+                buildRaisedButton(CollageType.RightBig, 'RightBig',GlobalKey(debugLabel: 'RightBigKey')),
+                buildRaisedButton(CollageType.FourLeftBig, 'FourLeftBig',GlobalKey(debugLabel: 'FourLeftBigKey')),
+                buildRaisedButton(CollageType.VMiddleTwo, 'VMiddleTwo',GlobalKey(debugLabel: 'VMiddleTwoKey')),
+                buildRaisedButton(CollageType.CenterBig, 'CenterBig',GlobalKey(debugLabel: 'CenterBigKey')),
+              ],
+            );
+          },
+          ),
         ),
       ),
     );
   }
 
-  pushImageWidget(CollageType type) async {
+  pushImageWidget(CollageType type, GlobalKey<State<StatefulWidget>> globalKey) async {
     await Navigator.of(context).push(
-      FadeRouteTransition(page: CollageSample(type)),
+      FadeRouteTransition(page: CollageSample(type,globalKey)),
     );
   }
 

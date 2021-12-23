@@ -14,7 +14,7 @@ description: A new Flutter application.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -28,11 +28,11 @@ dependencies:
     path: ../
 
   # using this to take screenshot
-  screenshot: ^0.0.2
+  screenshot: ^1.2.3
 
   # using this to open default email composed
-  flutter_email_sender: ^2.0.0
-
+  flutter_email_sender: ^5.0.2
+ # path_provider: ^2.0.8
 
 dev_dependencies:
   flutter_test:

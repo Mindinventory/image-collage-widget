@@ -18,41 +18,43 @@ class ImageCollageWidget extends StatefulWidget {
   final bool withImage;
 
   const ImageCollageWidget(
-      {Key key, this.filePath, this.collageType, this.withImage})
-      : super(key: key);
+      { required this.filePath,
+      required this.collageType,
+      required this.withImage});
 
   @override
   State<StatefulWidget> createState() {
-    return _ImageCollageWidget(filePath: filePath, collageType: collageType);
+    return _ImageCollageWidget(filePath, collageType);
   }
 }
 
 class _ImageCollageWidget extends State<ImageCollageWidget>
     with WidgetsBindingObserver {
-  _ImageCollageWidget({this.filePath, this.collageType});
+  late String filePath;
+  late CollageType collageType;
 
-  String filePath;
-  final CollageType collageType;
+  _ImageCollageWidget(this.filePath, this.collageType);
+
   var withImage = false;
 
-  CollageBloc _imageListBloc;
-  AppLifecycleState _appLifecycleState;
+  late CollageBloc _imageListBloc;
+  AppLifecycleState? _appLifecycleState;
   var isFromPermissionButton = false;
 
   @override
   void initState() {
     super.initState();
 
-    withImage = widget.withImage ?? false;
+    withImage = widget.withImage;
 
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     _imageListBloc =
         CollageBloc(context: context, path: filePath, collageType: collageType);
 
     if (withImage && !Platform.isIOS) {
       _handlePermission();
     } else {
-      _imageListBloc.dispatch(ImageListEvent(_imageListBloc.blankList()));
+      ImageListEvent(_imageListBloc.blankList());
     }
   }
 
@@ -64,16 +66,16 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _imageListBloc.dispose();
+    WidgetsBinding.instance!.removeObserver(this);
+    _imageListBloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      builder: (BuildContext context) => _imageListBloc,
-      child: BlocBuilder(
+      create: (BuildContext context) => _imageListBloc,
+      /*child: BlocBuilder(
           bloc: _imageListBloc,
           builder: (context, CollageState state) {
             if (state is PermissionDeniedState) {
@@ -105,7 +107,7 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
             }
 
             return Container();
-          }),
+          }),*/
     );
   }
 

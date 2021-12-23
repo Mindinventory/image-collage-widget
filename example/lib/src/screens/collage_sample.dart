@@ -12,8 +12,9 @@ import 'package:screenshot/screenshot.dart';
 /// A CollageWidget.
 class CollageSample extends StatefulWidget {
   final CollageType collageType;
+  final GlobalKey<State<StatefulWidget>> globalKey;
 
-  CollageSample(this.collageType);
+  CollageSample(this.collageType, this.globalKey);
 
   @override
   State<StatefulWidget> createState() {
@@ -22,7 +23,6 @@ class CollageSample extends StatefulWidget {
 }
 
 class _CollageSample extends State<CollageSample> {
-  var globalKey = GlobalKey(debugLabel: "screenShotKey");
   ScreenshotController _screenshotController = ScreenshotController();
 
   @override
@@ -32,47 +32,52 @@ class _CollageSample extends State<CollageSample> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-          ),
-          title: Text(
-            "Collage maker",
-            style: TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
-          ),
-          actions: <Widget>[
-            GestureDetector(
-              onTap: () {
-                _captureImage();
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(right: 16),
-                child: Center(
-                  child: Text("Share",
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white)),
-                ),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+            leading: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
               ),
-            )
-          ]),
-      body: Screenshot(
-        key: globalKey,
-        controller: _screenshotController,
+            ),
+            title: Text(
+              "Collage maker",
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white),
+            ),
+            actions: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  _captureImage();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Center(
+                    child: Text("Share",
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white)),
+                  ),
+                ),
+              )
+            ]),
+        body: Screenshot(
+          key: widget.globalKey,
+          controller: _screenshotController,
 
-        /// @param withImage:- If withImage = true, It will load image from given {filePath (default = "Camera")}
-        /// @param collageType:- CollageType.CenterBig
+          /// @param withImage:- If withImage = true, It will load image from given {filePath (default = "Camera")}
+          /// @param collageType:- CollageType.CenterBig
 
-        child: ImageCollageWidget(
-          collageType: widget.collageType,
-          withImage: true,
+          child: Container(
+            height: 500,
+            width: 500,
+            color: Colors.red,
+          ),
         ),
       ),
     );
@@ -81,7 +86,7 @@ class _CollageSample extends State<CollageSample> {
   /// call this method to share file
   _shareScreenShot(String imgpath) async {
     final Email email = Email(
-      attachmentPath: imgpath,
+      attachmentPaths: [imgpath],
     );
 
     await FlutterEmailSender.send(email);
@@ -100,11 +105,13 @@ class _CollageSample extends State<CollageSample> {
     String fileName = DateTime.now().toIso8601String();
     String path = '$directory/$fileName.png';
     debugPrint("saved screenshot path: " + path);
-    _screenshotController.capture(path: path).then((File image) {
-      ///Capture Done`
-      debugPrint("saved screenshot path1: " + image.path);
+    _screenshotController.capture().then((image) {
+      var file = File.fromRawPath(image!);
 
-      _shareScreenShot(image.path);
+      ///Capture Done`
+      debugPrint("saved screenshot path1: " + file.path);
+
+      _shareScreenShot(file.path);
     }).catchError((onError) {
       debugPrint(onError);
     });

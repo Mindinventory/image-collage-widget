@@ -38,14 +38,14 @@ class ImageListState extends CollageState {
   final List<Images> images;
 
   ImageListState({
-    this.images,
+    required this.images,
   }) : super([images]);
 
   ImageListState copyWith({
-    List<Images> images,
+    required List<Images> images,
   }) {
     return ImageListState(
-      images: images ?? this.images,
+      images: images,
     );
   }
 
