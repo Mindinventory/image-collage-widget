@@ -60,6 +60,7 @@ class GridCollageWidget extends StatelessWidget {
       return 12;
   }
 
+
   buildRow(int index) {
     return Stack(
       fit: StackFit.expand,
@@ -328,5 +329,5 @@ class GridCollageWidget extends StatelessWidget {
             ],
           );
         });
-  }
+
 }

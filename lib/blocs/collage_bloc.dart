@@ -8,7 +8,6 @@ import 'package:flutter/widgets.dart';
 import 'package:image_collage_widget/model/images.dart';
 import 'package:image_collage_widget/utils/CollageType.dart';
 import 'package:image_collage_widget/utils/permission_type.dart';
-import 'package:image_collage_widget/utils/permissions.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -19,11 +18,8 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   final CollageType collageType;
   final BuildContext context;
 
-  CollageBloc(
-      {required this.context, required this.collageType, required this.path})
-      : super(InitialState()) {
-    on<CheckPermissionEvent>((event, emit) =>
-        checkPermission(event.isFromPicker, event.permissionType, event.index));
+  CollageBloc({required this.context, required this.collageType, required this.path}) : super(InitialState()) {
+    on<CheckPermissionEvent>((event, emit) => checkPermission(event.isFromPicker, event.permissionType, event.index));
     on<AllowPermissionEvent>((event, emit) {
       if (event.isFromPicker) {
         openPicker(event.permissionType, event.index);
@@ -32,8 +28,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
         loadImages(path, getImageCount());
       }
     });
-    on<AskPermissionEvent>((event, emit) =>
-        askPermission(event.isFromPicker, event.permissionType, event.index));
+    on<AskPermissionEvent>((event, emit) => askPermission(event.isFromPicker, event.permissionType, event.index));
 
     on<DenyPermissionEvent>((event, emit) {
       showSnackBar();
@@ -48,8 +43,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     });
   }
 
-  checkPermission(
-      bool isFromPicker, PermissionType permissionType, int index) async {
+  checkPermission(bool isFromPicker, PermissionType permissionType, int index) async {
     PermissionStatus _permissionStatus = PermissionStatus.denied;
 
     askForPermission(
