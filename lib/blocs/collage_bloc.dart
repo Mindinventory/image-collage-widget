@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:image_collage_widget/model/images.dart';
 import 'package:image_collage_widget/utils/CollageType.dart';
 import 'package:image_collage_widget/utils/permission_type.dart';
+import 'package:image_collage_widget/utils/permissions.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -19,104 +21,92 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
 
   CollageBloc(
       {required this.context, required this.collageType, required this.path})
-      : super(LoadImageState()) {
-
-    on<CheckPermissionEvent>((event, emit) => add(checkPermission(
-        event.isFromPicker, event.permissionType, event.index)));
+      : super(InitialState()) {
+    on<CheckPermissionEvent>((event, emit) => checkPermission(event.isFromPicker, event.permissionType, event.index));
     on<AllowPermissionEvent>((event, emit) {
       if (event.isFromPicker) {
         openPicker(event.permissionType, event.index);
       } else {
-        emit(LoadImageState()) ;
+        emit(LoadImageState());
         loadImages(path, getImageCount());
       }
     });
-    on<AskPermissionEvent>((event, emit) => emit(
-        askPermission(event.isFromPicker, event.permissionType, event.index)));
+    on<AskPermissionEvent>((event, emit) => askPermission(event.isFromPicker, event.permissionType, event.index));
 
     on<DenyPermissionEvent>((event, emit) {
       showSnackBar();
       if (!event.isFromPicker) {
-        emit(PermissionDeniedState()) ;
+        emit(PermissionDeniedState());
       }
     });
 
     on<ImageListEvent>((event, emit) {
-      emit(LoadImageState()) ;
-      emit(ImageListState(images: event.imageList)) ;
+      emit(LoadImageState());
+      emit(ImageListState(images: event.imageList));
     });
   }
 
-  checkPermission(
-      bool isFromPicker, PermissionType permissionType, int index) async {
+  checkPermission(bool isFromPicker, PermissionType permissionType, int index) async {
     PermissionStatus _permissionStatus = PermissionStatus.denied;
 
-    if (permissionType == PermissionType.Storage) {
-      if (Platform.isIOS) {
-        askForPermission(
-            _permissionStatus, isFromPicker, permissionType, index);
+    askForPermission(
+      _permissionStatus,
+      isFromPicker,
+      permissionType,
+      index,
+    );
+  }
+
+  askForPermission(PermissionStatus permissionStatus, bool isFromPicker, PermissionType permissionType, int index) async {
+    try {
+      if (await Permissions.cameraAndStoragePermissionsGranted()) {
+        add(AllowPermissionEvent(isFromPicker, permissionType, index));
       } else {
-        askForPermission(
-            _permissionStatus, isFromPicker, permissionType, index);
+        add(AskPermissionEvent(isFromPicker, permissionType, index));
       }
-    } else {
-      askForPermission(_permissionStatus, isFromPicker, permissionType, index);
+    } catch (e) {
+      debugPrint('Camera Exception ::: $e');
     }
-  }
-
-  askForPermission(PermissionStatus permissionStatus, bool isFromPicker,
-      PermissionType permissionType, int index) {
-    if (permissionStatus == PermissionStatus.granted) {
-      AllowPermissionEvent(isFromPicker, permissionType, index);
-    } else {
-      AskPermissionEvent(isFromPicker, permissionType, index);
-    }
-  }
-
-  void dispatchCheckPermissionEvent(
-      {required PermissionType permissionType,
-      bool isFromPicker = false,
-      int index = -1}) {
-    CheckPermissionEvent(isFromPicker, permissionType, index);
   }
 
   openPicker(PermissionType permissionType, int index) async {
-    await ImagePicker.platform
-        .pickImage(
-            source: permissionType == PermissionType.Storage
-                ? ImageSource.gallery
-                : ImageSource.camera)
-        .then((image) {
-      if (image != null) {
-        var imageList = (state as ImageListState).copyWith(images: []).images;
-        imageList[index].imageUrl = File(image.path);
-        ImageListEvent(imageList);
-      }
-    });
+    PickedFile? image = await ImagePicker.platform.pickImage(
+        source: permissionType == PermissionType.Storage
+            ? ImageSource.gallery
+            : ImageSource.camera);
+
+    if (image != null) {
+      var imageList = (state as ImageListState).images;
+      imageList[index].imageUrl = File(image.path);
+      add(ImageListEvent(imageList));
+    }
   }
 
   askPermission(
       bool isFromPicker, PermissionType permissionType, int index) async {
     Map<Permission, PermissionStatus> statuses = {};
-    // You can request multiple permissions at once.
-
+    /// You can request multiple permissions at once.
     if (Platform.isIOS) {
       statuses = await [
         Permission.photos,
         Permission.storage,
       ].request();
     } else {
-      statuses = await [Permission.camera].request();
+      statuses = await [Permission.camera, Permission.storage].request();
     }
     bool isForStorage = permissionType == PermissionType.Storage;
     if (isForStorage) {
-      if (Platform.isIOS)
+      if (Platform.isIOS) {
+        ///For iOS we need to access photos
         await Permission.photos.request().then((value) => eventAction(
             isForStorage, isFromPicker, permissionType, index, statuses));
-      else
+      } else {
+        ///For Android we need to access storage
         await Permission.storage.request().then((value) => eventAction(
             isForStorage, isFromPicker, permissionType, index, statuses));
+      }
     } else {
+      ///If coming from camera then we need to take permission of camera (In both platform)
       await Permission.camera.request().then((value) => eventAction(
           isForStorage, isFromPicker, permissionType, index, statuses));
     }
@@ -134,16 +124,16 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
                 : Permission.storage
             : Permission.camera] ==
         PermissionStatus.granted) {
-      AllowPermissionEvent(isFromPicker, permissionType, index);
+      add(AllowPermissionEvent(isFromPicker, permissionType, index));
     } else {
-      DenyPermissionEvent(isFromPicker, permissionType, index);
+      add(DenyPermissionEvent(isFromPicker, permissionType, index));
     }
   }
 
   dispatchRemovePhotoEvent(int index) {
-    var imageList = (state as ImageListState).copyWith(images: []).images;
+    var imageList = (state as ImageListState).images;
     imageList[index].imageUrl = null;
-    ImageListEvent(imageList);
+    add(ImageListEvent(imageList));
   }
 
   /// To load photos from device.
@@ -151,8 +141,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   /// Default path :- Camera.
   /// @param maxCount:- Maximum number of photos will return.
   Future loadImages(String path, int maxCount) async {
-    String? path = await FilePicker.platform.getDirectoryPath();
-
+    var path = await FilePicker.platform.getDirectoryPath();
     var root = Directory(path != null ? path : '$path/DCIM/Camera');
 
     await root.exists().then((isExist) async {
@@ -164,32 +153,23 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
           allowedExtensions: ['jpeg', 'png', 'jpg'],
         );
 
-        if (result != null) {
-          List<File> files =
-              result.paths.map((path) => File(path ?? '')).toList();
+        List<File> files =
+            result!.paths.map((path) => File(path ?? '')).toList();
+        debugPrint('file length---> ${files.length}');
 
-          debugPrint('file length---> ${files.length}');
+        /// [file] by default will return old images.
+        /// for getting latest max number of photos [file.sublist(file.length - maxImage, file.length)]
 
-          /// [file] by default will return old images.
-          /// for getting latest max number of photos [file.sublist(file.length - maxImage, file.length)]
+        List<File> filesList = files.length > maxImage
+            ? files.sublist(files.length - (maxImage + 1), files.length - 1)
+            : files;
 
-          List<File> filesList = files.length > maxImage
-              ? files.sublist(files.length - (maxImage + 1), files.length - 1)
-              : files;
-          debugPrint("image path-->$files");
-          debugPrint("image path file-->$files");
-
-          for (int i = 0; i < filesList.length; i++) {
-            listImage[i].imageUrl = File(filesList[i].path);
-          }
-        } else {
-          // User canceled the picker
+        for (int i = 0; i < filesList.length; i++) {
+          listImage[i].imageUrl = File(filesList[i].path);
         }
-      } else {
-        debugPrint("No directory found.");
       }
 
-      ImageListEvent(listImage);
+      add(ImageListEvent(listImage));
     });
   }
 

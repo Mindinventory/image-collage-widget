@@ -1,6 +1,6 @@
 import 'dart:io';
 
 class Images {
-  late File? imageUrl;
+  File? imageUrl;
   late int id;
 }
