@@ -1,37 +1,65 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:image_collage_widget/blocs/collage_bloc.dart';
-import 'package:image_collage_widget/blocs/collage_state.dart';
-import 'package:image_collage_widget/model/images.dart';
-import 'package:image_collage_widget/utils/CollageType.dart';
-import 'package:image_collage_widget/utils/permission_type.dart';
+import '../blocs/bloc.dart';
+import '../blocs/collage_bloc.dart';
+import '../blocs/collage_state.dart';
+import '../model/images.dart';
+import '../utils/CollageType.dart';
+import '../utils/permission_type.dart';
 
-class GridCollageWidget extends StatefulWidget {
-  CollageType collageType;
-  CollageBloc imageListBloc;
+class GridCollageWidget extends StatelessWidget {
+  var _imageList = <Images>[];
+  CollageType _collageType;
+  CollageBloc _imageListBloc;
+  BuildContext _context;
 
-  GridCollageWidget(this.collageType, this.imageListBloc);
+  GridCollageWidget(this._collageType, this._imageListBloc, this._context);
 
   @override
-  State<GridCollageWidget> createState() => _GridCollageWidgetState();
-}
+  Widget build(BuildContext context) {
+    this._context = context;
+    if (_imageListBloc.state is ImageListState) {
+      _imageList = (_imageListBloc.state as ImageListState).images;
+      return StaggeredGridView.countBuilder(
+          shrinkWrap: false,
+          itemCount: _imageList.length,
+          crossAxisCount: getCrossAxisCount(_collageType),
+          primary: true,
+          itemBuilder: (BuildContext context, int index) => buildRow(index),
+          staggeredTileBuilder: (int index) => StaggeredTile.count(getCellCount(index: index, isForCrossAxis: true, type: _collageType),
+              double.parse(getCellCount(index: index, isForCrossAxis: false, type: _collageType).toString())));
+    }
+    return Container(
+      color: Colors.green,
+    );
+  }
 
-class _GridCollageWidgetState extends State<GridCollageWidget> {
-  var imageList = [];
+  getCrossAxisCount(CollageType type) {
+    if (type == CollageType.HSplit || type == CollageType.VSplit || type == CollageType.ThreeHorizontal || type == CollageType.ThreeVertical)
+      return 2;
+    else if (type == CollageType.FourSquare)
+      return 4;
+    else if (type == CollageType.NineSquare)
+      return 9;
+    else if (type == CollageType.LeftBig || type == CollageType.RightBig)
+      return 3;
+    else if (type == CollageType.FourLeftBig)
+      return 3;
+    else if (type == CollageType.VMiddleTwo || type == CollageType.CenterBig) return 12;
+  }
 
   buildRow(int index) {
     return Stack(
       fit: StackFit.expand,
-//      splashColor: Colors.blue[100],
-//      highlightColor: Colors.blue[200],
-//      onTap: () => showDialogImage(index),
       children: <Widget>[
         Positioned.fill(
           bottom: 0.0,
           child: Container(
-            child: imageList[index].imageUrl != null
+            child: _imageList[index].imageUrl != null
                 ? Image.file(
-                    imageList[index].imageUrl,
+                    _imageList[index].imageUrl ?? File(''),
                     fit: BoxFit.cover,
                   )
                 : const Padding(
@@ -56,50 +84,16 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
     );
   }
 
-  imagePickerDialog(int index) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  buildDialogOption(index, isForStorage: false),
-                  buildDialogOption(index),
-                  (widget.imageListBloc.state as ImageListState)
-                              .images[index]
-                              .imageUrl !=
-                          null
-                      ? buildDialogOption(index, isForRemovePhoto: true)
-                      : Container(),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  dismissDialog();
-                },
-                child: Text("Cancel"),
-              )
-            ],
-          );
-        });
-  }
-
   showDialogImage(int index) {
     showModalBottomSheet(
-        context: context,
+        context: _context,
         builder: (BuildContext context) {
           return Container(
             color: Color(0xFF737373),
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: new BorderRadius.only(
-                      topLeft: const Radius.circular(10.0),
-                      topRight: const Radius.circular(10.0))),
+                  borderRadius: new BorderRadius.only(topLeft: const Radius.circular(10.0), topRight: const Radius.circular(10.0))),
               child: Padding(
                 padding: EdgeInsets.only(top: 20, bottom: 20),
                 child: Column(
@@ -108,10 +102,7 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
                   children: <Widget>[
                     buildDialogOption(index, isForStorage: false),
                     buildDialogOption(index),
-                    (widget.imageListBloc.state as ImageListState)
-                                .images[index]
-                                .imageUrl !=
-                            null
+                    (_imageListBloc.state as ImageListState).images[index].imageUrl != null
                         ? buildDialogOption(index, isForRemovePhoto: true)
                         : Container(),
                   ],
@@ -122,23 +113,22 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
         });
   }
 
-  dismissDialog() {
-    Navigator.of(context, rootNavigator: true).pop(true);
-  }
-
   Widget buildDialogOption(int index,
       {bool isForStorage = true, bool isForRemovePhoto = false}) {
-    return FlatButton(
+    return TextButton(
         onPressed: () {
           dismissDialog();
           isForRemovePhoto
-              ? widget.imageListBloc.dispatchRemovePhotoEvent(index)
-              : widget.imageListBloc.dispatchCheckPermissionEvent(
-                  permissionType: isForStorage
-                      ? PermissionType.Storage
-                      : PermissionType.Camera,
-                  index: index,
-                  isFromPicker: true);
+              ? _imageListBloc.dispatchRemovePhotoEvent(index)
+              : _imageListBloc.add(
+                  CheckPermissionEvent(
+                    true,
+                    isForStorage
+                        ? PermissionType.Storage
+                        : PermissionType.Camera,
+                    index,
+                  ),
+                );
         },
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -168,6 +158,10 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
             ],
           ),
         ));
+  }
+
+  dismissDialog() {
+    Navigator.of(_context, rootNavigator: true).pop(true);
   }
 
   /// @param index:- index of image.
@@ -289,43 +283,32 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
     }
   }
 
-  getCrossAxisCount(CollageType type) {
-    if (type == CollageType.HSplit ||
-        type == CollageType.VSplit ||
-        type == CollageType.ThreeHorizontal ||
-        type == CollageType.ThreeVertical)
-      return 2;
-    else if (type == CollageType.FourSquare)
-      return 4;
-    else if (type == CollageType.NineSquare)
-      return 9;
-    else if (type == CollageType.LeftBig || type == CollageType.RightBig)
-      return 3;
-    else if (type == CollageType.FourLeftBig)
-      return 3;
-    else if (type == CollageType.VMiddleTwo || type == CollageType.CenterBig)
-      return 12;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (widget.imageListBloc.state is ImageListState) {
-      imageList = (widget.imageListBloc.state as ImageListState).images;
-      return StaggeredGridView.countBuilder(
-          shrinkWrap: false,
-          itemCount: imageList.length,
-          crossAxisCount: getCrossAxisCount(widget.collageType),
-          primary: true,
-          itemBuilder: (BuildContext context, int index) => buildRow(index),
-          staggeredTileBuilder: (int index) => StaggeredTile.count(
-              getCellCount(
-                  index: index, isForCrossAxis: true, type: widget.collageType),
-              getCellCount(
-                  index: index,
-                  isForCrossAxis: false,
-                  type: widget.collageType)));
-    } else {
-      return Offstage();
-    }
+  imagePickerDialog(int index) {
+    showDialog(
+        context: _context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  buildDialogOption(index, isForStorage: false),
+                  buildDialogOption(index),
+                  (_imageListBloc.state as ImageListState).images[index].imageUrl != null
+                      ? buildDialogOption(index, isForRemovePhoto: true)
+                      : Container(),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  dismissDialog();
+                },
+                child: Text("Cancel"),
+              )
+            ],
+          );
+        });
   }
 }

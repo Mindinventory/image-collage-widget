@@ -26,10 +26,11 @@ dependencies:
 
   image_collage_widget:
     path: ../
-
+  file_picker: ^4.3.0
   # using this to take screenshot
   screenshot: ^1.2.3
-
+  # for core structure
+  flutter_lints: ^1.0.4
   # using this to open default email composed
   flutter_email_sender: ^5.0.2
  # path_provider: ^2.0.8
