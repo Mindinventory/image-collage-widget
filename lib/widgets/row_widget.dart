@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:image_collage_widget/blocs/collage_event.dart';
+import '../blocs/collage_event.dart';
 import '../blocs/collage_bloc.dart';
 import '../blocs/collage_state.dart';
 import '../model/images.dart';
@@ -42,6 +42,7 @@ class GridCollageWidget extends StatelessWidget {
     );
   }
 
+  ///Find cross axis count for arrange items to Grid
   getCrossAxisCount(CollageType type) {
     if (type == CollageType.HSplit ||
         type == CollageType.VSplit ||
@@ -60,6 +61,7 @@ class GridCollageWidget extends StatelessWidget {
       return 12;
   }
 
+  ///Build UI either image is selected or not
   buildRow(int index) {
     return Stack(
       fit: StackFit.expand,
@@ -94,6 +96,7 @@ class GridCollageWidget extends StatelessWidget {
     );
   }
 
+  ///Show bottom sheet
   showDialogImage(int index) {
     showModalBottomSheet(
         context: _context,
@@ -128,6 +131,7 @@ class GridCollageWidget extends StatelessWidget {
         });
   }
 
+  ///Show dialog
   Widget buildDialogOption(int index,
       {bool isForStorage = true, bool isForRemovePhoto = false}) {
     return TextButton(
@@ -175,6 +179,7 @@ class GridCollageWidget extends StatelessWidget {
         ));
   }
 
+  ///Dismiss dialog
   dismissDialog() {
     Navigator.of(_context, rootNavigator: true).pop(true);
   }
@@ -298,6 +303,7 @@ class GridCollageWidget extends StatelessWidget {
     }
   }
 
+  ///Show image picker dialog
   imagePickerDialog(int index) {
     showDialog(
         context: _context,

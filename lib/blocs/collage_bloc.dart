@@ -42,7 +42,10 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     });
   }
 
-  checkPermission(bool isFromPicker, PermissionType permissionType, int index) async {
+
+  ///Checking permission
+  checkPermission(
+      bool isFromPicker, PermissionType permissionType, int index) async {
     PermissionStatus _permissionStatus = PermissionStatus.denied;
 
     askForPermission(
@@ -53,6 +56,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     );
   }
 
+  ///Ask permission events
   askForPermission(PermissionStatus permissionStatus, bool isFromPicker,
       PermissionType permissionType, int index) async {
     try {
@@ -66,6 +70,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     }
   }
 
+  ///Open picker dialog for photo selection
   openPicker(PermissionType permissionType, int index) async {
     PickedFile? image = await ImagePicker.platform.pickImage(
         source: permissionType == PermissionType.Storage
@@ -79,6 +84,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     }
   }
 
+  ///Asking permission (Platform specific)
   askPermission(
       bool isFromPicker, PermissionType permissionType, int index) async {
     Map<Permission, PermissionStatus> statuses = {};
@@ -110,6 +116,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     }
   }
 
+  ///On click of allow or denied event this method will be called...
   eventAction(
       bool isForStorage,
       bool isFromPicker,
@@ -128,6 +135,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     }
   }
 
+  ///For remove photo from perticular index
   dispatchRemovePhotoEvent(int index) {
     var imageList = (state as ImageListState).images;
     imageList[index].imageUrl = null;
@@ -171,6 +179,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     });
   }
 
+  ///Show blank images (Thumbnails)
   List<Images> blankList() {
     var imageList = <Images>[];
     for (int i = 0; i < getImageCount(); i++) {
@@ -201,6 +210,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
         collageType == CollageType.CenterBig) return 7;
   }
 
+  ///Used to show message
   showSnackBar({String msg = "Permission Denied."}) {
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text(msg),

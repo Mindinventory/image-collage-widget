@@ -7,6 +7,7 @@ abstract class CollageState extends Equatable {
   CollageState([List props = const []]) : super();
 }
 
+///Initial state
 class InitialState extends CollageState {
   @override
   String toString() => 'InitialState';
@@ -15,6 +16,7 @@ class InitialState extends CollageState {
   List<Object> get props => [];
 }
 
+///Permission denied state
 class PermissionDeniedState extends CollageState {
   @override
   String toString() => 'PermissionDeniedState';
@@ -23,6 +25,7 @@ class PermissionDeniedState extends CollageState {
   List<Object> get props => [];
 }
 
+///Load Image state
 class LoadImageState extends CollageState {
   @override
   String toString() => 'LoadImageState';
@@ -31,6 +34,7 @@ class LoadImageState extends CollageState {
   List<Object> get props => [];
 }
 
+///Image list state
 class ImageListState extends CollageState {
   final List<Images> images;
 

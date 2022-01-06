@@ -3,6 +3,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/services.dart';
 
 class Permissions {
+
+  ///Checking that camera and storage permission granted or not (Platform vise)
   static Future<bool> cameraAndStoragePermissionsGranted() async {
     PermissionStatus cameraPermissionStatus = await _getCameraPermission();
     switch (Platform.isAndroid ? 1 : 0) {
@@ -35,6 +37,7 @@ class Permissions {
     }
   }
 
+  ///Checking camera permission
   static Future<PermissionStatus> _getCameraPermission() async {
     PermissionStatus permission = await Permission.camera.status;
     if (permission != PermissionStatus.granted) {
@@ -45,6 +48,7 @@ class Permissions {
     }
   }
 
+  ///Checking storage permission
   static Future<PermissionStatus> _getStoragePermission() async {
     PermissionStatus permission = await Permission.storage.status;
     if (permission != PermissionStatus.granted) {
@@ -55,6 +59,7 @@ class Permissions {
     }
   }
 
+  ///Checking permission is availale or not (Platform specific)
   static void _handleInvalidPermissions(PermissionStatus cameraPermissionStatus,
       PermissionStatus? storagePermissionStatus) async {
     if (Platform.isAndroid) _getStoragePermission();
@@ -70,6 +75,7 @@ class Permissions {
         : permissionDisabledMessage();
   }
 
+  ///Throw message for permission denied
   static void permissionDeniedMessage() {
     throw PlatformException(
         code: "PERMISSION_DENIED",
@@ -77,6 +83,7 @@ class Permissions {
         details: null);
   }
 
+  ///Throw message for permission disabled
   static void permissionDisabledMessage() {
     throw PlatformException(
         code: "PERMISSION_DISABLED",

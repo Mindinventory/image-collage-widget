@@ -6,6 +6,7 @@ abstract class CollageEvent extends Equatable {
   CollageEvent([List props = const []]) : super();
 }
 
+///Checking permission event
 class CheckPermissionEvent extends CollageEvent {
   final PermissionType permissionType;
   final bool isFromPicker;
@@ -20,6 +21,7 @@ class CheckPermissionEvent extends CollageEvent {
   List<Object> get props => [permissionType, isFromPicker, index];
 }
 
+///Asking permission event
 class AskPermissionEvent extends CollageEvent {
   final PermissionType permissionType;
   final bool isFromPicker;
@@ -33,6 +35,7 @@ class AskPermissionEvent extends CollageEvent {
   List<Object> get props => [permissionType, isFromPicker, index];
 }
 
+///Allow permission event
 class AllowPermissionEvent extends CollageEvent {
   final PermissionType permissionType;
   final bool isFromPicker;
@@ -46,6 +49,7 @@ class AllowPermissionEvent extends CollageEvent {
   List<Object> get props => [permissionType, isFromPicker, index];
 }
 
+///Denied permission event
 class DenyPermissionEvent extends CollageEvent {
   final PermissionType permissionType;
   final bool isFromPicker;
@@ -59,6 +63,7 @@ class DenyPermissionEvent extends CollageEvent {
   List<Object> get props => [permissionType, isFromPicker, index];
 }
 
+///ImageList permission event
 class ImageListEvent extends CollageEvent {
   final List<Images> imageList;
 

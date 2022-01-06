@@ -99,6 +99,7 @@ class _CollageSample extends State<CollageSample> {
     }
   }
 
+  ///Used for capture screenshot
   Future<Uint8List> _capturePng() async {
     try {
       setState(() {

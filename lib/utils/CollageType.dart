@@ -1,3 +1,5 @@
+
+///This 11 type of different collage widget
 enum CollageType {
   VSplit,
   HSplit,
