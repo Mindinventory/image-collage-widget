@@ -14,7 +14,8 @@ class ImageCollageWidget extends StatefulWidget {
   final CollageType collageType;
   final bool withImage;
 
-  const ImageCollageWidget({this.filePath, required this.collageType, required this.withImage});
+  const ImageCollageWidget(
+      {this.filePath, required this.collageType, required this.withImage});
 
   @override
   State<StatefulWidget> createState() {
@@ -22,8 +23,8 @@ class ImageCollageWidget extends StatefulWidget {
   }
 }
 
-class _ImageCollageWidget extends State<ImageCollageWidget> with WidgetsBindingObserver {
-
+class _ImageCollageWidget extends State<ImageCollageWidget>
+    with WidgetsBindingObserver {
   late String _filePath;
   late CollageType _collageType;
   var _withImage = false;
@@ -38,7 +39,8 @@ class _ImageCollageWidget extends State<ImageCollageWidget> with WidgetsBindingO
     _withImage = widget.withImage;
 
     WidgetsBinding.instance!.addObserver(this);
-    _imageListBloc = CollageBloc(context: context, path: _filePath, collageType: _collageType);
+    _imageListBloc = CollageBloc(
+        context: context, path: _filePath, collageType: _collageType);
     if (_withImage && !Platform.isIOS) {
       _handlePermission();
     } else {

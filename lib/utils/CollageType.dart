@@ -1,5 +1,4 @@
-
-enum CollageType{
+enum CollageType {
   VSplit,
   HSplit,
   FourSquare,

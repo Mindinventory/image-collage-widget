@@ -100,9 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-
-
   RoundedRectangleBorder buttonShape() {
-    return RoundedRectangleBorder(borderRadius: new BorderRadius.circular(10.0));
+    return RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0));
   }
 }
