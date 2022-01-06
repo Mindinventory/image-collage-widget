@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:image_collage_widget/model/images.dart';
-import 'package:meta/meta.dart';
 
 @immutable
 abstract class CollageState extends Equatable {

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import '../blocs/bloc.dart';
+import 'package:image_collage_widget/blocs/collage_event.dart';
 import '../blocs/collage_bloc.dart';
 import '../blocs/collage_state.dart';
 import '../model/images.dart';
