@@ -1,6 +1,6 @@
 name: image_collage_widget
 description: A flutter package, that lets you create 11 different types of modern photomontage which allows selecting images from photo library and taking new pictures with the camera.
-version: 1.0.1
+version: 1.0.2
 homepage: https://github.com/Mindinventory/image-collage-widget.git
 
 environment:

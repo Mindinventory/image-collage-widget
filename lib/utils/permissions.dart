@@ -3,7 +3,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/services.dart';
 
 class Permissions {
-
   ///Checking that camera and storage permission granted or not (Platform vise)
   static Future<bool> cameraAndStoragePermissionsGranted() async {
     PermissionStatus cameraPermissionStatus = await _getCameraPermission();

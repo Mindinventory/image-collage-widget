@@ -1,3 +1,7 @@
+## [1.0.2] - 06 January 2022
+
+* Improve performance
+
 ## [1.0.1] - 05 January 2022
 
 * Null sound safety support

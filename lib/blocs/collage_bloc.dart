@@ -42,7 +42,6 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     });
   }
 
-
   ///Checking permission
   checkPermission(
       bool isFromPicker, PermissionType permissionType, int index) async {
