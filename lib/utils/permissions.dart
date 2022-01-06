@@ -71,14 +71,14 @@ class Permissions {
   }
 
   static void permissionDeniedMessage() {
-    throw new PlatformException(
+    throw PlatformException(
         code: "PERMISSION_DENIED",
         message: "Access to camera and storage denied",
         details: null);
   }
 
   static void permissionDisabledMessage() {
-    throw new PlatformException(
+    throw PlatformException(
         code: "PERMISSION_DISABLED",
         message: "Camera data is not available on device",
         details: null);
