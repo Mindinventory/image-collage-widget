@@ -21,7 +21,7 @@ A flutter package for creating photo collages in your applications.
      ```yaml
          dependencies:
            ...
-           image_collage_widget: ^1.0.0
+           image_collage_widget: ^1.0.1
      ```
 
 
@@ -63,12 +63,12 @@ A flutter package for creating photo collages in your applications.
 
 ### Dependencies
 
-* flutter_staggered_grid_view: ^0.2.7
-* flutter_bloc: ^0.9.0
-* flutter_file_manager: ^0.0.6
-* permission_handler: ^3.0.0
-* image_picker: ^0.5.0+9
-* equatable: ^0.2.3
+* flutter_staggered_grid_view
+* flutter_bloc
+* flutter_file_manager
+* permission_handler
+* image_picker
+* equatable
 
 # LICENSE!
 

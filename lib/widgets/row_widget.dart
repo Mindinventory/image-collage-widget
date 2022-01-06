@@ -28,8 +28,12 @@ class GridCollageWidget extends StatelessWidget {
           crossAxisCount: getCrossAxisCount(_collageType),
           primary: true,
           itemBuilder: (BuildContext context, int index) => buildRow(index),
-          staggeredTileBuilder: (int index) => StaggeredTile.count(getCellCount(index: index, isForCrossAxis: true, type: _collageType),
-              double.parse(getCellCount(index: index, isForCrossAxis: false, type: _collageType).toString())));
+          staggeredTileBuilder: (int index) => StaggeredTile.count(
+              getCellCount(
+                  index: index, isForCrossAxis: true, type: _collageType),
+              double.parse(getCellCount(
+                      index: index, isForCrossAxis: false, type: _collageType)
+                  .toString())));
     }
     return Container(
       color: Colors.green,
@@ -37,7 +41,10 @@ class GridCollageWidget extends StatelessWidget {
   }
 
   getCrossAxisCount(CollageType type) {
-    if (type == CollageType.HSplit || type == CollageType.VSplit || type == CollageType.ThreeHorizontal || type == CollageType.ThreeVertical)
+    if (type == CollageType.HSplit ||
+        type == CollageType.VSplit ||
+        type == CollageType.ThreeHorizontal ||
+        type == CollageType.ThreeVertical)
       return 2;
     else if (type == CollageType.FourSquare)
       return 4;
@@ -47,7 +54,8 @@ class GridCollageWidget extends StatelessWidget {
       return 3;
     else if (type == CollageType.FourLeftBig)
       return 3;
-    else if (type == CollageType.VMiddleTwo || type == CollageType.CenterBig) return 12;
+    else if (type == CollageType.VMiddleTwo || type == CollageType.CenterBig)
+      return 12;
   }
 
   buildRow(int index) {
@@ -73,10 +81,10 @@ class GridCollageWidget extends StatelessWidget {
           ),
         ),
         Positioned.fill(
-            child: new Material(
+            child: Material(
                 borderRadius: BorderRadius.all(Radius.circular(5)),
                 color: Colors.transparent,
-                child: new InkWell(
+                child: InkWell(
                   highlightColor: Colors.transparent,
                   onTap: () => showDialogImage(index),
                 ))),
@@ -93,7 +101,9 @@ class GridCollageWidget extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: new BorderRadius.only(topLeft: const Radius.circular(10.0), topRight: const Radius.circular(10.0))),
+                  borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(10.0),
+                      topRight: const Radius.circular(10.0))),
               child: Padding(
                 padding: EdgeInsets.only(top: 20, bottom: 20),
                 child: Column(
@@ -102,7 +112,10 @@ class GridCollageWidget extends StatelessWidget {
                   children: <Widget>[
                     buildDialogOption(index, isForStorage: false),
                     buildDialogOption(index),
-                    (_imageListBloc.state as ImageListState).images[index].imageUrl != null
+                    (_imageListBloc.state as ImageListState)
+                                .images[index]
+                                .imageUrl !=
+                            null
                         ? buildDialogOption(index, isForRemovePhoto: true)
                         : Container(),
                   ],
@@ -294,7 +307,10 @@ class GridCollageWidget extends StatelessWidget {
                 children: <Widget>[
                   buildDialogOption(index, isForStorage: false),
                   buildDialogOption(index),
-                  (_imageListBloc.state as ImageListState).images[index].imageUrl != null
+                  (_imageListBloc.state as ImageListState)
+                              .images[index]
+                              .imageUrl !=
+                          null
                       ? buildDialogOption(index, isForRemovePhoto: true)
                       : Container(),
                 ],

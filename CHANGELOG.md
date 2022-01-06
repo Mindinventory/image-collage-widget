@@ -1,3 +1,8 @@
+## [1.0.1] - 05 January 2022
+
+* Null sound safety support
+* Improve performance
+
 ## [1.0.0] - 02 October 2019
 
 * Update the dependencies

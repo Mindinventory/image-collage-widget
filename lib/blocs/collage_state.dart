@@ -16,7 +16,6 @@ class InitialState extends CollageState {
 }
 
 class PermissionDeniedState extends CollageState {
-
   @override
   String toString() => 'PermissionDeniedState';
 
@@ -25,7 +24,6 @@ class PermissionDeniedState extends CollageState {
 }
 
 class LoadImageState extends CollageState {
-
   @override
   String toString() => 'LoadImageState';
 
@@ -34,7 +32,6 @@ class LoadImageState extends CollageState {
 }
 
 class ImageListState extends CollageState {
-
   final List<Images> images;
 
   ImageListState({
@@ -55,4 +52,3 @@ class ImageListState extends CollageState {
   @override
   List<Object> get props => [images];
 }
-

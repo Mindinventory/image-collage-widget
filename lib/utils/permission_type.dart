@@ -1,6 +1,1 @@
-
-
-enum PermissionType {
-  Storage,
-  Camera
-}
+enum PermissionType { Storage, Camera }

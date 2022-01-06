@@ -22,7 +22,8 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   CollageBloc(
       {required this.context, required this.collageType, required this.path})
       : super(InitialState()) {
-    on<CheckPermissionEvent>((event, emit) => checkPermission(event.isFromPicker, event.permissionType, event.index));
+    on<CheckPermissionEvent>((event, emit) =>
+        checkPermission(event.isFromPicker, event.permissionType, event.index));
     on<AllowPermissionEvent>((event, emit) {
       if (event.isFromPicker) {
         openPicker(event.permissionType, event.index);
@@ -31,7 +32,8 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
         loadImages(path, getImageCount());
       }
     });
-    on<AskPermissionEvent>((event, emit) => askPermission(event.isFromPicker, event.permissionType, event.index));
+    on<AskPermissionEvent>((event, emit) =>
+        askPermission(event.isFromPicker, event.permissionType, event.index));
 
     on<DenyPermissionEvent>((event, emit) {
       showSnackBar();
@@ -46,7 +48,8 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     });
   }
 
-  checkPermission(bool isFromPicker, PermissionType permissionType, int index) async {
+  checkPermission(
+      bool isFromPicker, PermissionType permissionType, int index) async {
     PermissionStatus _permissionStatus = PermissionStatus.denied;
 
     askForPermission(
@@ -57,7 +60,8 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     );
   }
 
-  askForPermission(PermissionStatus permissionStatus, bool isFromPicker, PermissionType permissionType, int index) async {
+  askForPermission(PermissionStatus permissionStatus, bool isFromPicker,
+      PermissionType permissionType, int index) async {
     try {
       if (await Permissions.cameraAndStoragePermissionsGranted()) {
         add(AllowPermissionEvent(isFromPicker, permissionType, index));
@@ -85,6 +89,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   askPermission(
       bool isFromPicker, PermissionType permissionType, int index) async {
     Map<Permission, PermissionStatus> statuses = {};
+
     /// You can request multiple permissions at once.
     if (Platform.isIOS) {
       statuses = await [

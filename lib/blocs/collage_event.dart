@@ -21,12 +21,10 @@ class CheckPermissionEvent extends CollageEvent {
 }
 
 class AskPermissionEvent extends CollageEvent {
-
   final PermissionType permissionType;
   final bool isFromPicker;
   int index = 0;
-  AskPermissionEvent(
-       this.isFromPicker, this.permissionType, this.index);
+  AskPermissionEvent(this.isFromPicker, this.permissionType, this.index);
 
   @override
   String toString() => 'AskPermissionEvent';
@@ -39,8 +37,7 @@ class AllowPermissionEvent extends CollageEvent {
   final PermissionType permissionType;
   final bool isFromPicker;
   int index = 0;
-  AllowPermissionEvent(
-      this.isFromPicker, this.permissionType, this.index);
+  AllowPermissionEvent(this.isFromPicker, this.permissionType, this.index);
 
   @override
   String toString() => 'AllowPermissionEvent';
@@ -53,8 +50,7 @@ class DenyPermissionEvent extends CollageEvent {
   final PermissionType permissionType;
   final bool isFromPicker;
   int index = 0;
-  DenyPermissionEvent(
-      this.isFromPicker, this.permissionType, this.index);
+  DenyPermissionEvent(this.isFromPicker, this.permissionType, this.index);
 
   @override
   String toString() => 'DenyPermissionEvent';
@@ -74,4 +70,3 @@ class ImageListEvent extends CollageEvent {
   @override
   List<Object> get props => [imageList];
 }
-
