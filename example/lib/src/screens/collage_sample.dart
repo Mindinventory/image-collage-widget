@@ -3,9 +3,10 @@ library image_collage_widget;
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:image_collage_widget/blocs/collage_bloc.dart';
 import 'package:image_collage_widget/image_collage_widget.dart';
@@ -34,12 +35,12 @@ class _CollageSample extends State<CollageSample> {
       appBar: AppBar(
           leading: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: Icon(
+            child: const Icon(
               Icons.arrow_back,
               color: Colors.white,
             ),
           ),
-          title: Text(
+          title: const Text(
             "Collage maker",
             style: TextStyle(
                 fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
@@ -47,8 +48,8 @@ class _CollageSample extends State<CollageSample> {
           actions: <Widget>[
             GestureDetector(
               onTap: () => _capturePng(),
-              child: Padding(
-                padding: const EdgeInsets.only(right: 16),
+              child: const Padding(
+                padding: EdgeInsets.only(right: 16),
                 child: Center(
                   child: Text("Share",
                       style: TextStyle(
@@ -76,7 +77,7 @@ class _CollageSample extends State<CollageSample> {
             Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              child: IgnorePointer(
+              child: const IgnorePointer(
                 ignoring: true,
                 child: Center(
                   child: CircularProgressIndicator(),
@@ -97,7 +98,13 @@ class _CollageSample extends State<CollageSample> {
       attachmentPaths: [imgpath],
     );
 
-    await FlutterEmailSender.send(email);
+    try {
+      await FlutterEmailSender.send(email);
+    } on PlatformException catch (e) {
+      log('Platform Exception: $e');
+    } catch (e) {
+      log('Exception: $e');
+    }
   }
 
   Future<Uint8List> _capturePng() async {

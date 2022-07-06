@@ -1,12 +1,14 @@
 library image_collage_widget;
 
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'blocs/bloc.dart';
 import 'utils/CollageType.dart';
 import 'utils/permission_type.dart';
 import 'widgets/row_widget.dart';
-import 'blocs/bloc.dart';
 
 /// A ImageCollageWidget.
 class ImageCollageWidget extends StatefulWidget {
@@ -14,8 +16,11 @@ class ImageCollageWidget extends StatefulWidget {
   final CollageType collageType;
   final bool withImage;
 
-  const ImageCollageWidget(
-      {this.filePath, required this.collageType, required this.withImage});
+  const ImageCollageWidget({
+    this.filePath,
+    required this.collageType,
+    required this.withImage,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -38,20 +43,16 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
 
     _withImage = widget.withImage;
 
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     _imageListBloc = CollageBloc(
         context: context, path: _filePath, collageType: _collageType);
-    if (_withImage && !Platform.isIOS) {
-      _handlePermission();
-    } else {
-      _imageListBloc.add(ImageListEvent(_imageListBloc.blankList()));
-    }
+    _imageListBloc.add(ImageListEvent(_imageListBloc.blankList()));
     _imageListBloc.add(ImageListEvent(_imageListBloc.blankList()));
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _imageListBloc.close();
     super.dispose();
   }
