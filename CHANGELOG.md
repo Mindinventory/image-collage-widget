@@ -1,3 +1,7 @@
+## [1.0.3] - 15 July 2022
+
+* Resolved permission issue on iOS.
+
 ## [1.0.2] - 06 January 2022
 
 * Improve performance
