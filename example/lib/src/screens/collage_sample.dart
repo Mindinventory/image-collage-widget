@@ -26,7 +26,7 @@ class CollageSample extends StatefulWidget {
 }
 
 class _CollageSample extends State<CollageSample> {
-  GlobalKey _screenshotKey = GlobalKey();
+  final GlobalKey _screenshotKey = GlobalKey();
   bool _startLoading = false;
 
   @override
