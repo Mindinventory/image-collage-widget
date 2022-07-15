@@ -11,11 +11,13 @@ import '../utils/permission_type.dart';
 
 class GridCollageWidget extends StatelessWidget {
   var _imageList = <Images>[];
-  CollageType _collageType;
-  CollageBloc _imageListBloc;
+  final CollageType _collageType;
+  final CollageBloc _imageListBloc;
   BuildContext _context;
 
-  GridCollageWidget(this._collageType, this._imageListBloc, this._context);
+  GridCollageWidget(this._collageType, this._imageListBloc, this._context,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

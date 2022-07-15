@@ -60,6 +60,10 @@ class Permissions {
     if (Platform.isAndroid) _getStoragePermission();
     PermissionStatus storagePermissionStatus = await _getStoragePermission();
 
+    if (cameraPermissionStatus.isPermanentlyDenied) {
+      openAppSettings();
+      return;
+    }
     ((cameraPermissionStatus == PermissionStatus.denied) &&
             (storagePermissionStatus == PermissionStatus.denied))
         ? permissionDeniedMessage()
