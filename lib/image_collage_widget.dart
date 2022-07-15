@@ -5,7 +5,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'blocs/bloc.dart';
+import 'blocs/collage_bloc.dart';
+import 'blocs/collage_event.dart';
+import 'blocs/collage_state.dart';
 import 'utils/CollageType.dart';
 import 'utils/permission_type.dart';
 import 'widgets/row_widget.dart';

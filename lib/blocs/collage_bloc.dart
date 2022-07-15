@@ -9,6 +9,7 @@ import 'package:image_collage_widget/utils/CollageType.dart';
 import 'package:image_collage_widget/utils/permission_type.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../utils/permissions.dart';
 import 'collage_event.dart';
 import 'collage_state.dart';
 
