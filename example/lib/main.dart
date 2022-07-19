@@ -68,6 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }
 
+    ///Create multple shapes
     return Scaffold(
       appBar: AppBar(
         title: Text("Test"),
@@ -94,11 +95,14 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  ///On click of perticular type of button show that type of widget
   pushImageWidget(CollageType type) async {
     await Navigator.of(context).push(
       FadeRouteTransition(page: CollageSample(type)),
     );
   }
+
+
 
   RoundedRectangleBorder buttonShape() {
     return RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0));

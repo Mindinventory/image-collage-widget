@@ -1,29 +1,25 @@
 import 'dart:async';
 import 'dart:io';
-
-import 'package:bloc/bloc.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_collage_widget/model/images.dart';
 import 'package:image_collage_widget/utils/CollageType.dart';
 import 'package:image_collage_widget/utils/permission_type.dart';
-import 'package:image_collage_widget/utils/permissions.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import 'bloc.dart';
+import '../utils/permissions.dart';
+import 'collage_event.dart';
+import 'collage_state.dart';
 
 class CollageBloc extends Bloc<CollageEvent, CollageState> {
   String path;
   final CollageType collageType;
   final BuildContext context;
 
-  CollageBloc(
-      {required this.context, required this.collageType, required this.path})
-      : super(InitialState()) {
-    on<CheckPermissionEvent>((event, emit) =>
-        checkPermission(event.isFromPicker, event.permissionType, event.index));
+  CollageBloc({required this.context, required this.collageType, required this.path}) : super(InitialState()) {
+    on<CheckPermissionEvent>((event, emit) => checkPermission(event.isFromPicker, event.permissionType, event.index));
     on<AllowPermissionEvent>((event, emit) {
       if (event.isFromPicker) {
         openPicker(event.permissionType, event.index);
@@ -32,8 +28,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
         loadImages(path, getImageCount());
       }
     });
-    on<AskPermissionEvent>((event, emit) =>
-        askPermission(event.isFromPicker, event.permissionType, event.index));
+    on<AskPermissionEvent>((event, emit) => askPermission(event.isFromPicker, event.permissionType, event.index));
 
     on<DenyPermissionEvent>((event, emit) {
       showSnackBar();
@@ -48,6 +43,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     });
   }
 
+  ///Checking permission
   checkPermission(
       bool isFromPicker, PermissionType permissionType, int index) async {
     PermissionStatus _permissionStatus = PermissionStatus.denied;
@@ -60,6 +56,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     );
   }
 
+  ///Ask permission events
   askForPermission(PermissionStatus permissionStatus, bool isFromPicker,
       PermissionType permissionType, int index) async {
     try {
@@ -73,6 +70,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     }
   }
 
+  ///Open picker dialog for photo selection
   openPicker(PermissionType permissionType, int index) async {
     PickedFile? image = await ImagePicker.platform.pickImage(
         source: permissionType == PermissionType.Storage
@@ -86,6 +84,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     }
   }
 
+  ///Asking permission (Platform specific)
   askPermission(
       bool isFromPicker, PermissionType permissionType, int index) async {
     Map<Permission, PermissionStatus> statuses = {};
@@ -117,6 +116,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     }
   }
 
+  ///On click of allow or denied event this method will be called...
   eventAction(
       bool isForStorage,
       bool isFromPicker,
@@ -135,6 +135,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     }
   }
 
+  ///For remove photo from perticular index
   dispatchRemovePhotoEvent(int index) {
     var imageList = (state as ImageListState).images;
     imageList[index].imageUrl = null;
@@ -178,6 +179,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     });
   }
 
+  ///Show blank images (Thumbnails)
   List<Images> blankList() {
     var imageList = <Images>[];
     for (int i = 0; i < getImageCount(); i++) {
@@ -208,6 +210,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
         collageType == CollageType.CenterBig) return 7;
   }
 
+  ///Used to show message
   showSnackBar({String msg = "Permission Denied."}) {
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text(msg),

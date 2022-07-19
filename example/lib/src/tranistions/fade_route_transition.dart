@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+///Used for route page
 class FadeRouteTransition extends PageRouteBuilder {
   final Widget page;
 
