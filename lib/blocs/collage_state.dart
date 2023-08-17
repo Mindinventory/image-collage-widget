@@ -4,7 +4,7 @@ import 'package:image_collage_widget/model/images.dart';
 
 @immutable
 abstract class CollageState extends Equatable {
-  CollageState([List props = const []]) : super();
+  const CollageState([List props = const []]) : super();
 }
 
 ///Initial state

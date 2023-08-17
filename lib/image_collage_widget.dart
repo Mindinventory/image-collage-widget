@@ -1,14 +1,12 @@
 library image_collage_widget;
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/collage_bloc.dart';
 import 'blocs/collage_event.dart';
 import 'blocs/collage_state.dart';
-import 'utils/CollageType.dart';
+import 'utils/collage_type.dart';
 import 'utils/permission_type.dart';
 import 'widgets/row_widget.dart';
 
@@ -19,31 +17,27 @@ class ImageCollageWidget extends StatefulWidget {
   final bool withImage;
 
   const ImageCollageWidget({
+    super.key,
     this.filePath,
     required this.collageType,
     required this.withImage,
   });
 
   @override
-  State<StatefulWidget> createState() {
-    return _ImageCollageWidget(filePath ?? '', collageType);
-  }
+  State<StatefulWidget> createState() => _ImageCollageWidget();
 }
 
 class _ImageCollageWidget extends State<ImageCollageWidget>
     with WidgetsBindingObserver {
-  late String _filePath;
-  late CollageType _collageType;
-  var _withImage = false;
+  late final String _filePath;
+  late final CollageType _collageType;
   late CollageBloc _imageListBloc;
-
-  _ImageCollageWidget(this._filePath, this._collageType);
 
   @override
   void initState() {
     super.initState();
-
-    _withImage = widget.withImage;
+    _filePath = widget.filePath ?? '';
+    _collageType = widget.collageType;
 
     WidgetsBinding.instance.addObserver(this);
     _imageListBloc = CollageBloc(
@@ -71,7 +65,8 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text("To show images you have to allow storage permission."),
+                  const Text(
+                      "To show images you have to allow storage permission."),
                   TextButton(
                     style: ButtonStyle(
                         shape:
@@ -79,7 +74,7 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
                                 RoundedRectangleBorder(
                                     borderRadius:
                                         BorderRadius.circular(10.0)))),
-                    child: Text("Allow"),
+                    child: const Text("Allow"),
                     onPressed: () => _handlePermission(),
                   ),
                 ],
@@ -87,8 +82,8 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
             );
           }
           if (state is LoadImageState) {
-            return Center(
-              child: const CircularProgressIndicator(),
+            return const Center(
+              child: CircularProgressIndicator(),
             );
           }
           if (state is ImageListState) {
@@ -103,15 +98,13 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
   }
 
   void _handlePermission() {
-    _imageListBloc.add(CheckPermissionEvent(true, PermissionType.Storage, 0));
+    _imageListBloc.add(CheckPermissionEvent(true, PermissionType.storage, 0));
   }
 
   Widget _gridView() {
     return AspectRatio(
       aspectRatio: 1.0 / 1.0,
-      child: Container(
-        child: GridCollageWidget(_collageType, _imageListBloc, context),
-      ),
+      child: GridCollageWidget(_collageType, _imageListBloc, context),
     );
   }
 }

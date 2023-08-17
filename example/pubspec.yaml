@@ -41,6 +41,8 @@ dependencies:
   # using this to take screenshot
   screenshot: ^1.2.3
   share_plus: ^4.0.10
+  flutter_bloc: ^8.0.0
+  path_provider: ^2.0.0
 
 dev_dependencies:
   flutter_test:

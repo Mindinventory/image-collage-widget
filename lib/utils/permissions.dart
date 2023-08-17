@@ -7,7 +7,6 @@ class Permissions {
   static Future<bool> cameraAndStoragePermissionsGranted() async {
     PermissionStatus cameraPermissionStatus = await _getCameraPermission();
     switch (Platform.isAndroid ? 1 : 0) {
-
       ///For Android
       case 1:
         PermissionStatus storagePermissionStatus =
