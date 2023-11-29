@@ -21,7 +21,7 @@ A flutter package for creating photo collages in your applications.
     ```yaml
         dependencies:
           ...
-          image_collage_widget: ^1.0.1
+          image_collage_widget: ^1.0.4
     ```
 
 

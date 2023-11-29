@@ -1,3 +1,7 @@
+## [1.0.4] - 16 August 2023
+
+* Resolved issue no [11](https://github.com/Mindinventory/image-collage-widget/issues/11) and deprecated version.
+
 ## [1.0.3] - 15 July 2022
 
 * Resolved permission issue on iOS.

@@ -1,11 +1,12 @@
+// ignore_for_file: deprecated_member_use, invalid_use_of_visible_for_testing_member
+
 import 'dart:async';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_collage_widget/model/images.dart';
-import 'package:image_collage_widget/utils/CollageType.dart';
+import 'package:image_collage_widget/utils/collage_type.dart';
 import 'package:image_collage_widget/utils/permission_type.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,8 +19,11 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   final CollageType collageType;
   final BuildContext context;
 
-  CollageBloc({required this.context, required this.collageType, required this.path}) : super(InitialState()) {
-    on<CheckPermissionEvent>((event, emit) => checkPermission(event.isFromPicker, event.permissionType, event.index));
+  CollageBloc(
+      {required this.context, required this.collageType, required this.path})
+      : super(InitialState()) {
+    on<CheckPermissionEvent>((event, emit) =>
+        checkPermission(event.isFromPicker, event.permissionType, event.index));
     on<AllowPermissionEvent>((event, emit) {
       if (event.isFromPicker) {
         openPicker(event.permissionType, event.index);
@@ -28,7 +32,8 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
         loadImages(path, getImageCount());
       }
     });
-    on<AskPermissionEvent>((event, emit) => askPermission(event.isFromPicker, event.permissionType, event.index));
+    on<AskPermissionEvent>((event, emit) =>
+        askPermission(event.isFromPicker, event.permissionType, event.index));
 
     on<DenyPermissionEvent>((event, emit) {
       showSnackBar();
@@ -46,10 +51,10 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   ///Checking permission
   checkPermission(
       bool isFromPicker, PermissionType permissionType, int index) async {
-    PermissionStatus _permissionStatus = PermissionStatus.denied;
+    PermissionStatus permissionStatus = PermissionStatus.denied;
 
     askForPermission(
-      _permissionStatus,
+      permissionStatus,
       isFromPicker,
       permissionType,
       index,
@@ -73,7 +78,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   ///Open picker dialog for photo selection
   openPicker(PermissionType permissionType, int index) async {
     PickedFile? image = await ImagePicker.platform.pickImage(
-        source: permissionType == PermissionType.Storage
+        source: permissionType == PermissionType.storage
             ? ImageSource.gallery
             : ImageSource.camera);
 
@@ -98,7 +103,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     } else {
       statuses = await [Permission.camera, Permission.storage].request();
     }
-    bool isForStorage = permissionType == PermissionType.Storage;
+    bool isForStorage = permissionType == PermissionType.storage;
     if (isForStorage) {
       if (Platform.isIOS) {
         ///For iOS we need to access photos
@@ -148,10 +153,10 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   /// @param maxCount:- Maximum number of photos will return.
   Future loadImages(String path, int maxCount) async {
     var path = await FilePicker.platform.getDirectoryPath();
-    var root = Directory(path != null ? path : '$path/DCIM/Camera');
+    var root = Directory(path ?? '$path/DCIM/Camera');
 
     await root.exists().then((isExist) async {
-      int maxImage = maxCount != null ? maxCount : 6;
+      int maxImage = maxCount;
       var listImage = blankList();
       if (isExist) {
         FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -193,28 +198,31 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
 
   /// The no. of image return as per collage type.
   getImageCount() {
-    if (collageType == CollageType.HSplit || collageType == CollageType.VSplit)
+    if (collageType == CollageType.hSplit ||
+        collageType == CollageType.vSplit) {
       return 2;
-    else if (collageType == CollageType.FourSquare ||
-        collageType == CollageType.FourLeftBig)
+    } else if (collageType == CollageType.fourSquare ||
+        collageType == CollageType.fourLeftBig) {
       return 4;
-    else if (collageType == CollageType.NineSquare)
+    } else if (collageType == CollageType.nineSquare) {
       return 9;
-    else if (collageType == CollageType.ThreeVertical ||
-        collageType == CollageType.ThreeHorizontal)
+    } else if (collageType == CollageType.threeVertical ||
+        collageType == CollageType.threeHorizontal) {
       return 3;
-    else if (collageType == CollageType.LeftBig ||
-        collageType == CollageType.RightBig)
+    } else if (collageType == CollageType.leftBig ||
+        collageType == CollageType.rightBig) {
       return 6;
-    else if (collageType == CollageType.VMiddleTwo ||
-        collageType == CollageType.CenterBig) return 7;
+    } else if (collageType == CollageType.vMiddleTwo ||
+        collageType == CollageType.centerBig) {
+      return 7;
+    }
   }
 
   ///Used to show message
   showSnackBar({String msg = "Permission Denied."}) {
-    Scaffold.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(msg),
-      duration: Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 1000),
     ));
   }
 }

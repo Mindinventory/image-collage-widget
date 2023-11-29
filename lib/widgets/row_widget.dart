@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,7 +8,7 @@ import '../blocs/collage_event.dart';
 import '../blocs/collage_bloc.dart';
 import '../blocs/collage_state.dart';
 import '../model/images.dart';
-import '../utils/CollageType.dart';
+import '../utils/collage_type.dart';
 import '../utils/permission_type.dart';
 
 class GridCollageWidget extends StatelessWidget {
@@ -21,7 +23,7 @@ class GridCollageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    this._context = context;
+    _context = context;
     if (_imageListBloc.state is ImageListState) {
       _imageList = (_imageListBloc.state as ImageListState).images;
       return StaggeredGridView.countBuilder(
@@ -44,21 +46,23 @@ class GridCollageWidget extends StatelessWidget {
 
   ///Find cross axis count for arrange items to Grid
   getCrossAxisCount(CollageType type) {
-    if (type == CollageType.HSplit ||
-        type == CollageType.VSplit ||
-        type == CollageType.ThreeHorizontal ||
-        type == CollageType.ThreeVertical)
+    if (type == CollageType.hSplit ||
+        type == CollageType.vSplit ||
+        type == CollageType.threeHorizontal ||
+        type == CollageType.threeVertical) {
       return 2;
-    else if (type == CollageType.FourSquare)
+    } else if (type == CollageType.fourSquare) {
       return 4;
-    else if (type == CollageType.NineSquare)
+    } else if (type == CollageType.nineSquare) {
       return 9;
-    else if (type == CollageType.LeftBig || type == CollageType.RightBig)
+    } else if (type == CollageType.leftBig || type == CollageType.rightBig) {
       return 3;
-    else if (type == CollageType.FourLeftBig)
+    } else if (type == CollageType.fourLeftBig) {
       return 3;
-    else if (type == CollageType.VMiddleTwo || type == CollageType.CenterBig)
+    } else if (type == CollageType.vMiddleTwo ||
+        type == CollageType.centerBig) {
       return 12;
+    }
   }
 
   ///Build UI either image is selected or not
@@ -77,16 +81,16 @@ class GridCollageWidget extends StatelessWidget {
                 : const Padding(
                     padding: EdgeInsets.all(3),
                     child: Material(
-                      child: Icon(Icons.add),
                       borderRadius: BorderRadius.all(Radius.circular(5)),
                       color: Color(0xFFD3D3D3),
+                      child: Icon(Icons.add),
                     ),
                   ),
           ),
         ),
         Positioned.fill(
             child: Material(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
+                borderRadius: const BorderRadius.all(Radius.circular(5)),
                 color: Colors.transparent,
                 child: InkWell(
                   highlightColor: Colors.transparent,
@@ -102,15 +106,15 @@ class GridCollageWidget extends StatelessWidget {
         context: _context,
         builder: (BuildContext context) {
           return Container(
-            color: Color(0xFF737373),
+            color: const Color(0xFF737373),
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(10.0),
-                      topRight: const Radius.circular(10.0))),
+                      topLeft: Radius.circular(10.0),
+                      topRight: Radius.circular(10.0))),
               child: Padding(
-                padding: EdgeInsets.only(top: 20, bottom: 20),
+                padding: const EdgeInsets.only(top: 20, bottom: 20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,8 +147,8 @@ class GridCollageWidget extends StatelessWidget {
                   CheckPermissionEvent(
                     true,
                     isForStorage
-                        ? PermissionType.Storage
-                        : PermissionType.Camera,
+                        ? PermissionType.storage
+                        : PermissionType.camera,
                     index,
                   ),
                 );
@@ -195,58 +199,58 @@ class GridCollageWidget extends StatelessWidget {
     /// total cell count :- 2
     /// Column and Row :- 2*1 = 2 (Cross axis count)
 
-    if (type == CollageType.VSplit) {
-      if (isForCrossAxis)
-
+    if (type == CollageType.vSplit) {
+      if (isForCrossAxis) {
         /// Cross axis cell count
         return 1;
-      else
-
+      } else {
         /// Main axis cell count
         return 2;
+      }
     }
 
     /// total cell count :- 2
     /// Column and Row :- 1*2 = 2 (Cross axis count)
 
-    else if (type == CollageType.HSplit) {
-      if (isForCrossAxis)
-
+    else if (type == CollageType.hSplit) {
+      if (isForCrossAxis) {
         /// Cross axis cell count
         return 2;
-      else
-
+      } else {
         /// Main axis cell count
         return 1;
+      }
     }
 
     /// total cell count :- 4
     /// Column and Row :- 2*2 (Cross axis count)
 
-    else if (type == CollageType.FourSquare) {
+    else if (type == CollageType.fourSquare) {
       /// cross axis and main axis cell count
       return 2;
     }
 
     /// total cell count :- 9
     /// Column and Row :- 3*3 (Cross axis count)
-    else if (type == CollageType.NineSquare) {
+    else if (type == CollageType.nineSquare) {
       return 3;
     }
 
     /// total cell count :- 3
     /// Column and Row :- 2 * 2
     /// First index taking 2 cell count in main axis and also in cross axis.
-    else if (type == CollageType.ThreeVertical) {
+    else if (type == CollageType.threeVertical) {
       if (isForCrossAxis) {
         return 1;
-      } else
+      } else {
         return (index == 0) ? 2 : 1;
-    } else if (type == CollageType.ThreeHorizontal) {
+      }
+    } else if (type == CollageType.threeHorizontal) {
       if (isForCrossAxis) {
         return (index == 0) ? 2 : 1;
-      } else
+      } else {
         return 1;
+      }
     }
 
     /// total cell count :- 6
@@ -254,21 +258,24 @@ class GridCollageWidget extends StatelessWidget {
     /// First index taking 2 cell in main axis and also in cross axis.
     /// Cross axis count = 3
 
-    else if (type == CollageType.LeftBig) {
+    else if (type == CollageType.leftBig) {
       if (isForCrossAxis) {
         return (index == 0) ? 2 : 1;
-      } else
+      } else {
         return (index == 0) ? 2 : 1;
-    } else if (type == CollageType.RightBig) {
+      }
+    } else if (type == CollageType.rightBig) {
       if (isForCrossAxis) {
         return (index == 1) ? 2 : 1;
-      } else
+      } else {
         return (index == 1) ? 2 : 1;
-    } else if (type == CollageType.FourLeftBig) {
+      }
+    } else if (type == CollageType.fourLeftBig) {
       if (isForCrossAxis) {
         return (index == 0) ? 2 : 1;
-      } else
+      } else {
         return (index == 0) ? 3 : 1;
+      }
 
       /// total tile count (image count)--> 7
       /// Column: Row (2:3)
@@ -278,11 +285,12 @@ class GridCollageWidget extends StatelessWidget {
       /// First column each cross axis tile count = cross axis count/ total tile count(In cross axis)  {12/3 = 4]
       /// Second column cross axis cell count :- 12/4 = 3
       /// Main axis count : Cross axis count / column count {12/2 = 6}
-    } else if (type == CollageType.VMiddleTwo) {
+    } else if (type == CollageType.vMiddleTwo) {
       if (isForCrossAxis) {
         return 6;
-      } else
+      } else {
         return (index == 0 || index == 3 || index == 5) ? 4 : 3;
+      }
     }
 
     /// total tile count (image count)--> 7
@@ -295,11 +303,12 @@ class GridCollageWidget extends StatelessWidget {
     /// Second each cross axis tile count = cross axis count / total tile count(In cross axis) = 12/1 = 12
     /// Second each main axis tile count = cross axis count / total tile count(In main axis) = 12/2 = 6
 
-    else if (type == CollageType.CenterBig) {
+    else if (type == CollageType.centerBig) {
       if (isForCrossAxis) {
         return (index == 1) ? 6 : 3;
-      } else
+      } else {
         return (index == 1) ? 12 : 4;
+      }
     }
   }
 
@@ -329,7 +338,7 @@ class GridCollageWidget extends StatelessWidget {
                 onPressed: () {
                   dismissDialog();
                 },
-                child: Text("Cancel"),
+                child: const Text("Cancel"),
               )
             ],
           );

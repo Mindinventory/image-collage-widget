@@ -49,5 +49,7 @@
     <string>You can take photos to document your job.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>You can select photos to attach to reports.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>

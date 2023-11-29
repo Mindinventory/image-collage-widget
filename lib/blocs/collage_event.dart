@@ -1,9 +1,11 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:equatable/equatable.dart';
 import 'package:image_collage_widget/model/images.dart';
 import 'package:image_collage_widget/utils/permission_type.dart';
 
 abstract class CollageEvent extends Equatable {
-  CollageEvent([List props = const []]) : super();
+  const CollageEvent([List props = const []]) : super();
 }
 
 ///Checking permission event
@@ -67,7 +69,7 @@ class DenyPermissionEvent extends CollageEvent {
 class ImageListEvent extends CollageEvent {
   final List<Images> imageList;
 
-  ImageListEvent(this.imageList);
+  const ImageListEvent(this.imageList);
 
   @override
   String toString() => 'ImageListEvent';
