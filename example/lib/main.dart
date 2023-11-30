@@ -1,12 +1,10 @@
 // ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
-import 'package:image_collage_widget/utils/collage_type.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_collage_widget/model/college_type.dart';
 
 import 'src/screens/collage_sample.dart';
 import 'src/tranistions/fade_route_transition.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   BlocOverrides.runZoned(
@@ -65,8 +63,7 @@ class MyHomePageState extends State<MyHomePage> {
     Widget buildRaisedButton(CollageType collageType, String text) {
       return ElevatedButton(
         onPressed: () => pushImageWidget(collageType),
-        style: ElevatedButton.styleFrom(
-            shape: buttonShape(), backgroundColor: color),
+        style: ElevatedButton.styleFrom(shape: buttonShape(), backgroundColor: color),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
