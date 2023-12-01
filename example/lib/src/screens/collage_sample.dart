@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image_collage_widget/image_collage_widget.dart';
-import 'package:image_collage_widget/utils/collage_type.dart';
+import 'package:image_collage_widget/model/college_type.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -44,8 +44,7 @@ class _CollageSample extends State<CollageSample> {
           ),
           title: const Text(
             "Collage maker",
-            style: TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
           ),
           actions: <Widget>[
             GestureDetector(
@@ -53,11 +52,7 @@ class _CollageSample extends State<CollageSample> {
               child: const Padding(
                 padding: EdgeInsets.only(right: 16),
                 child: Center(
-                  child: Text("Share",
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white)),
+                  child: Text("Share", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white)),
                 ),
               ),
             )
@@ -112,8 +107,7 @@ class _CollageSample extends State<CollageSample> {
         _startLoading = true;
       });
       Directory dir;
-      RenderRepaintBoundary? boundary = _screenshotKey.currentContext!
-          .findRenderObject() as RenderRepaintBoundary?;
+      RenderRepaintBoundary? boundary = _screenshotKey.currentContext!.findRenderObject() as RenderRepaintBoundary?;
       await Future.delayed(const Duration(milliseconds: 2000));
       if (Platform.isIOS) {
         ///For iOS
@@ -124,8 +118,7 @@ class _CollageSample extends State<CollageSample> {
       }
       var image = await boundary?.toImage();
       var byteData = await image?.toByteData(format: ui.ImageByteFormat.png);
-      File screenshotImageFile =
-          File('${dir.path}/${DateTime.now().microsecondsSinceEpoch}.png');
+      File screenshotImageFile = File('${dir.path}/${DateTime.now().microsecondsSinceEpoch}.png');
       await screenshotImageFile.writeAsBytes(byteData!.buffer.asUint8List());
       _shareScreenShot(screenshotImageFile.path);
       return byteData.buffer.asUint8List();

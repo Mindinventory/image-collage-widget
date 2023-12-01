@@ -4,11 +4,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import '../blocs/collage_event.dart';
+
 import '../blocs/collage_bloc.dart';
+import '../blocs/collage_event.dart';
 import '../blocs/collage_state.dart';
+import '../model/college_type.dart';
 import '../model/images.dart';
-import '../utils/collage_type.dart';
 import '../utils/permission_type.dart';
 
 class GridCollageWidget extends StatelessWidget {
@@ -17,9 +18,7 @@ class GridCollageWidget extends StatelessWidget {
   final CollageBloc _imageListBloc;
   BuildContext _context;
 
-  GridCollageWidget(this._collageType, this._imageListBloc, this._context,
-      {Key? key})
-      : super(key: key);
+  GridCollageWidget(this._collageType, this._imageListBloc, this._context, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +31,8 @@ class GridCollageWidget extends StatelessWidget {
           crossAxisCount: getCrossAxisCount(_collageType),
           primary: true,
           itemBuilder: (BuildContext context, int index) => buildRow(index),
-          staggeredTileBuilder: (int index) => StaggeredTile.count(
-              getCellCount(
-                  index: index, isForCrossAxis: true, type: _collageType),
-              double.parse(getCellCount(
-                      index: index, isForCrossAxis: false, type: _collageType)
-                  .toString())));
+          staggeredTileBuilder: (int index) => StaggeredTile.count(getCellCount(index: index, isForCrossAxis: true, type: _collageType),
+              double.parse(getCellCount(index: index, isForCrossAxis: false, type: _collageType).toString())));
     }
     return Container(
       color: Colors.green,
@@ -46,10 +41,7 @@ class GridCollageWidget extends StatelessWidget {
 
   ///Find cross axis count for arrange items to Grid
   getCrossAxisCount(CollageType type) {
-    if (type == CollageType.hSplit ||
-        type == CollageType.vSplit ||
-        type == CollageType.threeHorizontal ||
-        type == CollageType.threeVertical) {
+    if (type == CollageType.hSplit || type == CollageType.vSplit || type == CollageType.threeHorizontal || type == CollageType.threeVertical) {
       return 2;
     } else if (type == CollageType.fourSquare) {
       return 4;
@@ -59,8 +51,7 @@ class GridCollageWidget extends StatelessWidget {
       return 3;
     } else if (type == CollageType.fourLeftBig) {
       return 3;
-    } else if (type == CollageType.vMiddleTwo ||
-        type == CollageType.centerBig) {
+    } else if (type == CollageType.vMiddleTwo || type == CollageType.centerBig) {
       return 12;
     }
   }
@@ -109,10 +100,7 @@ class GridCollageWidget extends StatelessWidget {
             color: const Color(0xFF737373),
             child: Container(
               decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10.0),
-                      topRight: Radius.circular(10.0))),
+                  color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0))),
               child: Padding(
                 padding: const EdgeInsets.only(top: 20, bottom: 20),
                 child: Column(
@@ -121,10 +109,7 @@ class GridCollageWidget extends StatelessWidget {
                   children: <Widget>[
                     buildDialogOption(index, isForStorage: false),
                     buildDialogOption(index),
-                    (_imageListBloc.state as ImageListState)
-                                .images[index]
-                                .imageUrl !=
-                            null
+                    (_imageListBloc.state as ImageListState).images[index].imageUrl != null
                         ? buildDialogOption(index, isForRemovePhoto: true)
                         : Container(),
                   ],
@@ -136,8 +121,7 @@ class GridCollageWidget extends StatelessWidget {
   }
 
   ///Show dialog
-  Widget buildDialogOption(int index,
-      {bool isForStorage = true, bool isForRemovePhoto = false}) {
+  Widget buildDialogOption(int index, {bool isForStorage = true, bool isForRemovePhoto = false}) {
     return TextButton(
         onPressed: () {
           dismissDialog();
@@ -146,9 +130,7 @@ class GridCollageWidget extends StatelessWidget {
               : _imageListBloc.add(
                   CheckPermissionEvent(
                     true,
-                    isForStorage
-                        ? PermissionType.storage
-                        : PermissionType.camera,
+                    isForStorage ? PermissionType.storage : PermissionType.camera,
                     index,
                   ),
                 );
@@ -192,10 +174,7 @@ class GridCollageWidget extends StatelessWidget {
   /// @param isForCrossAxis = if from cross axis count = true
   /// Note:- If row == column then crossAxisCount = row*column // rowCount or columnCount
   /// e.g. row = 3 and column = 3 then crossAxisCount = 3*3(9) or 3
-  getCellCount(
-      {required int index,
-      required bool isForCrossAxis,
-      required CollageType type}) {
+  getCellCount({required int index, required bool isForCrossAxis, required CollageType type}) {
     /// total cell count :- 2
     /// Column and Row :- 2*1 = 2 (Cross axis count)
 
@@ -324,10 +303,7 @@ class GridCollageWidget extends StatelessWidget {
                 children: <Widget>[
                   buildDialogOption(index, isForStorage: false),
                   buildDialogOption(index),
-                  (_imageListBloc.state as ImageListState)
-                              .images[index]
-                              .imageUrl !=
-                          null
+                  (_imageListBloc.state as ImageListState).images[index].imageUrl != null
                       ? buildDialogOption(index, isForRemovePhoto: true)
                       : Container(),
                 ],

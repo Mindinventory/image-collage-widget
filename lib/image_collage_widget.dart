@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'blocs/collage_bloc.dart';
 import 'blocs/collage_event.dart';
 import 'blocs/collage_state.dart';
-import 'utils/collage_type.dart';
+import 'model/college_type.dart';
 import 'utils/permission_type.dart';
 import 'widgets/row_widget.dart';
 
@@ -27,8 +27,7 @@ class ImageCollageWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _ImageCollageWidget();
 }
 
-class _ImageCollageWidget extends State<ImageCollageWidget>
-    with WidgetsBindingObserver {
+class _ImageCollageWidget extends State<ImageCollageWidget> with WidgetsBindingObserver {
   late final String _filePath;
   late final CollageType _collageType;
   late CollageBloc _imageListBloc;
@@ -40,8 +39,7 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
     _collageType = widget.collageType;
 
     WidgetsBinding.instance.addObserver(this);
-    _imageListBloc = CollageBloc(
-        context: context, path: _filePath, collageType: _collageType);
+    _imageListBloc = CollageBloc(context: context, path: _filePath, collageType: _collageType);
     _imageListBloc.add(ImageListEvent(_imageListBloc.blankList()));
     _imageListBloc.add(ImageListEvent(_imageListBloc.blankList()));
   }
@@ -65,15 +63,10 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const Text(
-                      "To show images you have to allow storage permission."),
+                  const Text("To show images you have to allow storage permission."),
                   TextButton(
                     style: ButtonStyle(
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(10.0)))),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)))),
                     child: const Text("Allow"),
                     onPressed: () => _handlePermission(),
                   ),
