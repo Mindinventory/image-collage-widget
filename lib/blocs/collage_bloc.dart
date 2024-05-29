@@ -12,7 +12,7 @@ import 'package:image_collage_widget/utils/permission_type.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../model/college_type.dart';
+import '../utils/collage_type.dart';
 import '../utils/permissions.dart';
 import 'collage_event.dart';
 import 'collage_state.dart';
@@ -25,14 +25,9 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   /// List of custom Images
   List<Images>? listOfImages;
 
-  CollageBloc(
-      {required this.context,
-      required this.collageType,
-      required this.path,
-      this.listOfImages})
+  CollageBloc({required this.context, required this.collageType, required this.path, this.listOfImages})
       : super(InitialState()) {
-    on<CheckPermissionEvent>((event, emit) =>
-        checkPermission(event.isFromPicker, event.permissionType, event.index));
+    on<CheckPermissionEvent>((event, emit) => checkPermission(event.isFromPicker, event.permissionType, event.index));
     on<AllowPermissionEvent>((event, emit) {
       if (event.isFromPicker) {
         openPicker(event.permissionType, event.index);
@@ -41,8 +36,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
         loadImages(path, getImageCount());
       }
     });
-    on<AskPermissionEvent>((event, emit) =>
-        askPermission(event.isFromPicker, event.permissionType, event.index));
+    on<AskPermissionEvent>((event, emit) => askPermission(event.isFromPicker, event.permissionType, event.index));
 
     on<DenyPermissionEvent>((event, emit) {
       showSnackBar();
@@ -58,8 +52,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   }
 
   ///Checking permission
-  checkPermission(
-      bool isFromPicker, PermissionType permissionType, int index) async {
+  checkPermission(bool isFromPicker, PermissionType permissionType, int index) async {
     PermissionStatus permissionStatus = PermissionStatus.denied;
     askForPermission(
       permissionStatus,
@@ -70,8 +63,8 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   }
 
   ///Ask permission events
-  askForPermission(PermissionStatus permissionStatus, bool isFromPicker,
-      PermissionType permissionType, int index) async {
+  askForPermission(
+      PermissionStatus permissionStatus, bool isFromPicker, PermissionType permissionType, int index) async {
     try {
       if (await Permissions.cameraAndStoragePermissionsGranted()) {
         add(AllowPermissionEvent(isFromPicker, permissionType, index));
@@ -85,8 +78,8 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
 
   ///Open picker dialog for photo selection
   openPicker(PermissionType permissionType, int index) async {
-    PickedFile? image =
-        await ImagePicker.platform.pickImage(source: permissionType == PermissionType.storage ? ImageSource.gallery : ImageSource.camera);
+    PickedFile? image = await ImagePicker.platform
+        .pickImage(source: permissionType == PermissionType.storage ? ImageSource.gallery : ImageSource.camera);
 
     if (image != null) {
       var imageList = (state as ImageListState).images;
@@ -119,7 +112,9 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
       if (Platform.isIOS) {
         ///For iOS we need to access photos
 
-        await Permission.photos.request().then((value) => eventAction(isForStorage, isFromPicker, permissionType, index, statuses));
+        await Permission.photos
+            .request()
+            .then((value) => eventAction(isForStorage, isFromPicker, permissionType, index, statuses));
       } else {
         ///For Android we need to access storage
 
@@ -128,23 +123,27 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
         androidInfo.version.sdkInt! >= 33
 
             ///  current device android sdk version is greater than 33 than we need to request Permission.photos
-            ? await Permission.photos.request().then((value) => eventAction(
-                isForStorage, isFromPicker, permissionType, index, statuses))
-            : Permission.storage.request().then((value) => eventAction(
-                isForStorage, isFromPicker, permissionType, index, statuses));
+            ? await Permission.photos
+                .request()
+                .then((value) => eventAction(isForStorage, isFromPicker, permissionType, index, statuses))
+            : Permission.storage
+                .request()
+                .then((value) => eventAction(isForStorage, isFromPicker, permissionType, index, statuses));
         if (await Permission.storage.isGranted) {
-          eventAction(
-              isForStorage, isFromPicker, permissionType, index, statuses);
+          eventAction(isForStorage, isFromPicker, permissionType, index, statuses);
         }
       }
     } else {
       ///If coming from camera then we need to take permission of camera (In both platform)
-      await Permission.camera.request().then((value) => eventAction(isForStorage, isFromPicker, permissionType, index, statuses));
+      await Permission.camera
+          .request()
+          .then((value) => eventAction(isForStorage, isFromPicker, permissionType, index, statuses));
     }
   }
 
   ///On click of allow or denied event this method will be called...
-  eventAction(bool isForStorage, bool isFromPicker, PermissionType permissionType, int index, Map<Permission, PermissionStatus> status) async {
+  eventAction(bool isForStorage, bool isFromPicker, PermissionType permissionType, int index,
+      Map<Permission, PermissionStatus> status) async {
     ///  current device android sdk version is greater than 33 than we need to request Permission.photos
 
     if (Platform.isAndroid) {
@@ -161,8 +160,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
         add(DenyPermissionEvent(isFromPicker, permissionType, index));
       }
     } else {
-      if (status[isForStorage ? Permission.photos : Permission.camera] ==
-          PermissionStatus.granted) {
+      if (status[isForStorage ? Permission.photos : Permission.camera] == PermissionStatus.granted) {
         add(AllowPermissionEvent(isFromPicker, permissionType, index));
       } else {
         add(DenyPermissionEvent(isFromPicker, permissionType, index));
@@ -200,7 +198,8 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
         /// [file] by default will return old images.
         /// for getting latest max number of photos [file.sublist(file.length - maxImage, file.length)]
 
-        List<File> filesList = files.length > maxImage ? files.sublist(files.length - (maxImage + 1), files.length - 1) : files;
+        List<File> filesList =
+            files.length > maxImage ? files.sublist(files.length - (maxImage + 1), files.length - 1) : files;
 
         for (int i = 0; i < filesList.length; i++) {
           listImage[i].imageUrl = File(filesList[i].path);
@@ -216,15 +215,12 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
     var imageList = <Images>[];
 
     /// check
-    final bool isCustomImageList =
-        listOfImages != null && listOfImages!.isNotEmpty;
+    final bool isCustomImageList = listOfImages != null && listOfImages!.isNotEmpty;
     if (isCustomImageList) {
       imageList = listOfImages!;
     }
 
-    for (int i = isCustomImageList ? listOfImages!.length : 0;
-        i < getImageCount();
-        i++) {
+    for (int i = isCustomImageList ? listOfImages!.length : 0; i < getImageCount(); i++) {
       var images = Images();
 
       images.id = i + 1;

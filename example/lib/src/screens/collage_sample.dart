@@ -12,7 +12,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image_collage_widget/image_collage_widget.dart';
 import 'package:image_collage_widget/model/images.dart';
-import 'package:image_collage_widget/model/college_type.dart';
+import 'package:image_collage_widget/utils/collage_type.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -58,7 +58,8 @@ class _CollageSample extends State<CollageSample> {
               child: const Padding(
                 padding: EdgeInsets.only(right: 16),
                 child: Center(
-                  child: Text("Share", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black)),
+                  child:
+                      Text("Share", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black)),
                 ),
               ),
             )

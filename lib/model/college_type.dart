@@ -1,1 +1,0 @@
-enum CollageType { vSplit, hSplit, fourSquare, nineSquare, threeVertical, leftBig, rightBig, threeHorizontal, fourLeftBig, vMiddleTwo, centerBig }
