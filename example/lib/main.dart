@@ -1,10 +1,13 @@
-// ignore_for_file: deprecated_member_use
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_collage_widget/model/images.dart';
 import 'package:image_collage_widget/utils/collage_type.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'src/screens/collage_sample.dart';
-import 'src/tranistions/fade_route_transition.dart';
+import 'src/transitions/fade_route_transition.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -54,17 +57,47 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   var color = Colors.white;
+  File? file1;
+  File? file2;
+  File? file3;
 
   @override
   void initState() {
+    generateData();
     super.initState();
+  }
+
+  /// Function to convert ImageFiles from your asset image
+  Future<File> getImageFileFromAssets(String path) async {
+    final byteData = await rootBundle.load(path);
+
+    final file = File('${(await getTemporaryDirectory()).path}/$path');
+    await file.create(recursive: true);
+    await file.writeAsBytes(byteData.buffer
+        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+
+    return file;
+  }
+
+  void generateData() async {
+    file1 = await getImageFileFromAssets('assets/images/1.jpg');
+    file2 = await getImageFileFromAssets('assets/images/2.jpg');
+    file3 = await getImageFileFromAssets('assets/images/3.jpg');
   }
 
   @override
   Widget build(BuildContext context) {
     Widget buildRaisedButton(CollageType collageType, String text) {
       return ElevatedButton(
-        onPressed: () => pushImageWidget(collageType),
+        onPressed: () => pushImageWidget(
+            collageType,
+
+            ///Add your list of images
+            [
+              Images(id: 1, imageUrl: file1),
+              Images(id: 2, imageUrl: file2),
+              Images(id: 3, imageUrl: file3)
+            ]),
         style: ElevatedButton.styleFrom(
             shape: buttonShape(), backgroundColor: color),
         child: Padding(
@@ -77,7 +110,7 @@ class MyHomePageState extends State<MyHomePage> {
       );
     }
 
-    ///Create multple shapes
+    ///Create multiple shapes
     return Scaffold(
       appBar: AppBar(
         title: const Text("Test"),
@@ -104,10 +137,10 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  ///On click of perticular type of button show that type of widget
-  pushImageWidget(CollageType type) async {
+  ///On click of particular type of button show that type of widget
+  pushImageWidget(CollageType type, List<Images> images) async {
     await Navigator.of(context).push(
-      FadeRouteTransition(page: CollageSample(type)),
+      FadeRouteTransition(page: CollageSample(type, images)),
     );
   }
 

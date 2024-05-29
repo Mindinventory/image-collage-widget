@@ -21,45 +21,55 @@ A flutter package for creating photo collages in your applications.
     ```yaml
         dependencies:
           ...
-          image_collage_widget: ^1.0.4
+          image_collage_widget: ^1.0.5
     ```
 
 
 * Step 2:- Prepare AndroidManifest.xml
 
    ```
-       <uses-permission android:name="android.permission.CAMERA" />
-       <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-       <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-feature android:name="android.hardware.camera" />
+
+    <!-- Devices running Android 13 (API level 33) or higher -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+
+    <!-- To handle the reselection within the app on devices running Android 14
+         or higher if your app targets Android 14 (API level 34) or higher.  -->
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+  
    ```
 
-* Step 3:- Prepare Info.plist
+  * Step 3:- Prepare Info.plist
 
-   ```
-       <key>NSPhotoLibraryUsageDescription</key>
-       <string>Need to access photo library</string>
-       <key>NSCameraUsageDescription</key>
-       <string>To upload your picture</string>
-   ```
+     ```
+         <key>NSPhotoLibraryUsageDescription</key>
+         <string>Need to access photo library</string>
+         <key>NSCameraUsageDescription</key>
+         <string>To upload your picture</string>
+     ```
 
-* Step 4:- Add `ImageCollageWidget` in your dart file
+    * Step 4:- Add `ImageCollageWidget` in your dart file
 
-  ```
-        import 'package:image_collage_widget/image_collage_widget.dart';
-        import 'package:image_collage_widget/utils/collage_type.dart';
+      ```
+            import 'package:image_collage_widget/image_collage_widget.dart';
+            import 'package:image_collage_widget/utils/collage_type.dart';
         
-        ...
+            ...
         
-     /// @param withImage:- If withImage = true, It will load image from given {filePath (default = "Camera")}
-     /// @param collageType:- CollageType.CenterBig
+         /// @param withImage:- If withImage = true, It will load image from given {filePath (default = "Camera")}
+         /// @param collageType:- CollageType.CenterBig
 
-             child: ImageCollageWidget(
-               collageType: widget.collageType,
-               withImage: true,
-               filePath: _directory?.path?.toString(),
-             ),
+                 child: ImageCollageWidget(
+                   collageType: widget.collageType,
+                   withImage: true,
+                   filePath: _directory?.path?.toString(),
+                 ),
 
-  ```
+      ```
 
 ### Dependencies
 

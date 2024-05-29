@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image_collage_widget/image_collage_widget.dart';
+import 'package:image_collage_widget/model/images.dart';
 import 'package:image_collage_widget/utils/collage_type.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -18,8 +19,13 @@ import 'package:share_plus/share_plus.dart';
 /// A CollageWidget.
 class CollageSample extends StatefulWidget {
   final CollageType collageType;
+  final List<Images> images;
 
-  const CollageSample(this.collageType, {super.key});
+  const CollageSample(
+    this.collageType,
+    this.images, {
+    super.key,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -39,13 +45,13 @@ class _CollageSample extends State<CollageSample> {
             onTap: () => Navigator.pop(context),
             child: const Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
           title: const Text(
             "Collage maker",
             style: TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
+                fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
           ),
           actions: <Widget>[
             GestureDetector(
@@ -57,7 +63,7 @@ class _CollageSample extends State<CollageSample> {
                       style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
-                          color: Colors.white)),
+                          color: Colors.black)),
                 ),
               ),
             )
@@ -70,9 +76,14 @@ class _CollageSample extends State<CollageSample> {
             /// @param withImage:- If withImage = true, It will load image from given {filePath (default = "Camera")}
             /// @param collageType:- CollageType.CenterBig
 
-            child: ImageCollageWidget(
-              collageType: widget.collageType,
-              withImage: true,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: ImageCollageWidget(
+                images: widget.images,
+                collageType: widget.collageType,
+                withImage: true,
+              ),
             ),
           ),
           if (_startLoading)

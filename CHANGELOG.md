@@ -1,3 +1,7 @@
+## [1.0.5] - 29 May 2024
+
+* Resolved issue no [14](https://github.com/Mindinventory/image-collage-widget/issues/14)
+
 ## [1.0.4] - 16 August 2023
 
 * Resolved issue no [11](https://github.com/Mindinventory/image-collage-widget/issues/11) and deprecated version.
