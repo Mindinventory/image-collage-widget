@@ -3,5 +3,6 @@ import 'dart:io';
 ///Model class
 class Images {
   File? imageUrl;
-  late int id;
+  int? id;
+  Images({this.imageUrl, this.id});
 }
