@@ -31,8 +31,7 @@ class ImageCollageWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _ImageCollageWidget();
 }
 
-class _ImageCollageWidget extends State<ImageCollageWidget>
-    with WidgetsBindingObserver {
+class _ImageCollageWidget extends State<ImageCollageWidget> with WidgetsBindingObserver {
   late final String _filePath;
   late final CollageType _collageType;
   late CollageBloc _imageListBloc;
@@ -48,8 +47,7 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
     images = widget.images ?? [];
 
     WidgetsBinding.instance.addObserver(this);
-    _imageListBloc = CollageBloc(
-        context: context,
+    _imageListBloc = CollageBloc(context: context,
         path: _filePath,
         collageType: _collageType,
         listOfImages: images);
@@ -75,8 +73,7 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const Text(
-                      "To show images you have to allow storage permission."),
+                  const Text("To show images you have to allow storage permission."),
                   TextButton(
                     style: ButtonStyle(
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(

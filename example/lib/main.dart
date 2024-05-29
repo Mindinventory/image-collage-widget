@@ -1,15 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:image_collage_widget/model/images.dart';
 import 'package:image_collage_widget/utils/collage_type.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'src/screens/collage_sample.dart';
 import 'src/transitions/fade_route_transition.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   BlocOverrides.runZoned(
@@ -98,8 +92,7 @@ class MyHomePageState extends State<MyHomePage> {
               Images(id: 2, imageUrl: file2),
               Images(id: 3, imageUrl: file3)
             ]),
-        style: ElevatedButton.styleFrom(
-            shape: buttonShape(), backgroundColor: color),
+        style: ElevatedButton.styleFrom(shape: buttonShape(), backgroundColor: color),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(

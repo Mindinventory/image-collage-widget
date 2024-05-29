@@ -8,10 +8,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_collage_widget/model/images.dart';
-import 'package:image_collage_widget/utils/collage_type.dart';
 import 'package:image_collage_widget/utils/permission_type.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../model/college_type.dart';
 import '../utils/permissions.dart';
 import 'collage_event.dart';
 import 'collage_state.dart';
@@ -84,10 +85,8 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
 
   ///Open picker dialog for photo selection
   openPicker(PermissionType permissionType, int index) async {
-    PickedFile? image = await ImagePicker.platform.pickImage(
-        source: permissionType == PermissionType.storage
-            ? ImageSource.gallery
-            : ImageSource.camera);
+    PickedFile? image =
+        await ImagePicker.platform.pickImage(source: permissionType == PermissionType.storage ? ImageSource.gallery : ImageSource.camera);
 
     if (image != null) {
       var imageList = (state as ImageListState).images;
@@ -97,8 +96,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
   }
 
   ///Asking permission (Platform specific)
-  askPermission(
-      bool isFromPicker, PermissionType permissionType, int index) async {
+  askPermission(bool isFromPicker, PermissionType permissionType, int index) async {
     Map<Permission, PermissionStatus> statuses = {};
 
     /// You can request multiple permissions at once.
@@ -121,8 +119,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
       if (Platform.isIOS) {
         ///For iOS we need to access photos
 
-        await Permission.photos.request().then((value) => eventAction(
-            isForStorage, isFromPicker, permissionType, index, statuses));
+        await Permission.photos.request().then((value) => eventAction(isForStorage, isFromPicker, permissionType, index, statuses));
       } else {
         ///For Android we need to access storage
 
@@ -142,18 +139,12 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
       }
     } else {
       ///If coming from camera then we need to take permission of camera (In both platform)
-      await Permission.camera.request().then((value) => eventAction(
-          isForStorage, isFromPicker, permissionType, index, statuses));
+      await Permission.camera.request().then((value) => eventAction(isForStorage, isFromPicker, permissionType, index, statuses));
     }
   }
 
   ///On click of allow or denied event this method will be called...
-  eventAction(
-      bool isForStorage,
-      bool isFromPicker,
-      PermissionType permissionType,
-      int index,
-      Map<Permission, PermissionStatus> status) async {
+  eventAction(bool isForStorage, bool isFromPicker, PermissionType permissionType, int index, Map<Permission, PermissionStatus> status) async {
     ///  current device android sdk version is greater than 33 than we need to request Permission.photos
 
     if (Platform.isAndroid) {
@@ -203,16 +194,13 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
           allowedExtensions: ['jpeg', 'png', 'jpg'],
         );
 
-        List<File> files =
-            result!.paths.map((path) => File(path ?? '')).toList();
+        List<File> files = result!.paths.map((path) => File(path ?? '')).toList();
         debugPrint('file length---> ${files.length}');
 
         /// [file] by default will return old images.
         /// for getting latest max number of photos [file.sublist(file.length - maxImage, file.length)]
 
-        List<File> filesList = files.length > maxImage
-            ? files.sublist(files.length - (maxImage + 1), files.length - 1)
-            : files;
+        List<File> filesList = files.length > maxImage ? files.sublist(files.length - (maxImage + 1), files.length - 1) : files;
 
         for (int i = 0; i < filesList.length; i++) {
           listImage[i].imageUrl = File(filesList[i].path);
@@ -248,22 +236,17 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
 
   /// The no. of image return as per collage type.
   getImageCount() {
-    if (collageType == CollageType.hSplit ||
-        collageType == CollageType.vSplit) {
+    if (collageType == CollageType.hSplit || collageType == CollageType.vSplit) {
       return 2;
-    } else if (collageType == CollageType.fourSquare ||
-        collageType == CollageType.fourLeftBig) {
+    } else if (collageType == CollageType.fourSquare || collageType == CollageType.fourLeftBig) {
       return 4;
     } else if (collageType == CollageType.nineSquare) {
       return 9;
-    } else if (collageType == CollageType.threeVertical ||
-        collageType == CollageType.threeHorizontal) {
+    } else if (collageType == CollageType.threeVertical || collageType == CollageType.threeHorizontal) {
       return 3;
-    } else if (collageType == CollageType.leftBig ||
-        collageType == CollageType.rightBig) {
+    } else if (collageType == CollageType.leftBig || collageType == CollageType.rightBig) {
       return 6;
-    } else if (collageType == CollageType.vMiddleTwo ||
-        collageType == CollageType.centerBig) {
+    } else if (collageType == CollageType.vMiddleTwo || collageType == CollageType.centerBig) {
       return 7;
     }
   }
