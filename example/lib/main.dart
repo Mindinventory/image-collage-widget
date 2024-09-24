@@ -10,10 +10,8 @@ import 'src/screens/collage_sample.dart';
 import 'src/transitions/fade_route_transition.dart';
 
 void main() {
-  BlocOverrides.runZoned(
-    () => runApp(const MyApp()),
-    blocObserver: AppBlocObserver(),
-  );
+  Bloc.observer = AppBlocObserver();
+  runApp(const MyApp());
 }
 
 // Custom [BlocObserver] that observes all bloc and cubit state changes.
@@ -111,7 +109,7 @@ class MyHomePageState extends State<MyHomePage> {
     ///Create multiple shapes
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Test"),
+        title: const Text("Example"),
       ),
       body: Center(
         child: ListView(

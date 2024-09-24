@@ -108,7 +108,7 @@ class _CollageSample extends State<CollageSample> {
       _startLoading = false;
     });
     try {
-      Share.shareFiles([imgpath]);
+      Share.shareXFiles([XFile(imgpath)]);
     } on PlatformException catch (e) {
       log('Platform Exception: $e');
     } catch (e) {
