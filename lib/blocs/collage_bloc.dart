@@ -129,7 +129,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
 
         DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
         AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        androidInfo.version.sdkInt! >= 33
+        androidInfo.version.sdkInt >= 33
 
             ///  current device android sdk version is greater than 33 than we need to request Permission.photos
             ? await Permission.photos.request().then((value) => eventAction(
@@ -161,7 +161,7 @@ class CollageBloc extends Bloc<CollageEvent, CollageState> {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       if (status[isForStorage
-              ? (androidInfo.version.sdkInt! >= 33)
+              ? (androidInfo.version.sdkInt >= 33)
                   ? Permission.photos
                   : Permission.storage
               : Permission.camera] ==

@@ -1,7 +1,4 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../blocs/collage_bloc.dart';
@@ -12,14 +9,18 @@ import '../utils/collage_type.dart';
 import '../utils/permission_type.dart';
 
 class GridCollageWidget extends StatefulWidget {
-  final CollageType _collageType;
-  final CollageBloc _imageListBloc;
+  final CollageType collageType;
+  final CollageBloc imageListBloc;
   final List<Images> images;
   final EdgeInsetsGeometry? gridPadding;
 
-  const GridCollageWidget(this._collageType, this._imageListBloc,
-      {Key? key, required this.images, required this.gridPadding})
-      : super(key: key);
+  const GridCollageWidget({
+    super.key,
+    required this.collageType,
+    required this.imageListBloc,
+    required this.images,
+    required this.gridPadding,
+  });
 
   @override
   State<GridCollageWidget> createState() => _GridCollageWidgetState();
@@ -35,24 +36,31 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget._imageListBloc.state is ImageListState) {
-      _imageList = (widget._imageListBloc.state as ImageListState).images;
-      return StaggeredGridView.countBuilder(
-          shrinkWrap: false,
-          itemCount: _imageList.length,
-          crossAxisCount: getCrossAxisCount(widget._collageType),
-          primary: true,
-          itemBuilder: (BuildContext context, int index) => buildRow(index),
-          staggeredTileBuilder: (int index) => StaggeredTile.count(
-              getCellCount(
+    if (widget.imageListBloc.state is ImageListState) {
+      _imageList = (widget.imageListBloc.state as ImageListState).images;
+      return StaggeredGrid.count(
+        crossAxisCount: getCrossAxisCount(widget.collageType),
+        children: List.generate(
+          _imageList.length,
+          (int index) {
+            return StaggeredGridTile.count(
+              crossAxisCellCount: getCellCount(
+                index: index,
+                isForCrossAxis: true,
+                type: widget.collageType,
+              ),
+              mainAxisCellCount: double.parse(
+                getCellCount(
                   index: index,
-                  isForCrossAxis: true,
-                  type: widget._collageType),
-              double.parse(getCellCount(
-                      index: index,
-                      isForCrossAxis: false,
-                      type: widget._collageType)
-                  .toString())));
+                  isForCrossAxis: false,
+                  type: widget.collageType,
+                ).toString(),
+              ),
+              child: buildRow(index),
+            );
+          },
+        ),
+      );
     }
     return Container(
       color: Colors.green,
@@ -60,7 +68,7 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
   }
 
   ///Find cross axis count for arrange items to Grid
-  getCrossAxisCount(CollageType type) {
+  int getCrossAxisCount(CollageType type) {
     if (type == CollageType.hSplit ||
         type == CollageType.vSplit ||
         type == CollageType.threeHorizontal ||
@@ -77,11 +85,13 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
     } else if (type == CollageType.vMiddleTwo ||
         type == CollageType.centerBig) {
       return 12;
+    } else {
+      return 0;
     }
   }
 
   ///Build UI either image is selected or not
-  buildRow(int index) {
+  Widget buildRow(int index) {
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
@@ -120,101 +130,108 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
           ),
         ),
         Positioned.fill(
-            child: Material(
-                borderRadius: const BorderRadius.all(Radius.circular(5)),
-                color: Colors.transparent,
-                child: InkWell(
-                  highlightColor: Colors.transparent,
-                  onTap: () => showDialogImage(index),
-                ))),
+          child: Material(
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
+            color: Colors.transparent,
+            child: InkWell(
+              highlightColor: Colors.transparent,
+              onTap: () => showDialogImage(index),
+            ),
+          ),
+        ),
       ],
     );
   }
 
   ///Show bottom sheet
-  showDialogImage(int index) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            color: const Color(0xFF737373),
-            child: Container(
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10.0),
-                      topRight: Radius.circular(10.0))),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    buildDialogOption(index, isForStorage: false), // For Camera
-                    buildDialogOption(index, isForStorage: true), //For Gallery
-                    _imageList[index].imageUrl != null
-                        ? buildDialogOption(index,
-                            isForStorage: false,
-                            isForRemovePhoto: true) // for Remove
-                        : const Offstage()
-                  ],
-                ),
+  Future<void> showDialogImage(int index) async {
+    await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          color: const Color(0xFF737373),
+          child: Container(
+            decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10.0),
+                    topRight: Radius.circular(10.0))),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20, bottom: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  buildDialogOption(index, isForStorage: false), // For Camera
+                  buildDialogOption(index, isForStorage: true), //For Gallery
+                  _imageList[index].imageUrl != null
+                      ? buildDialogOption(index,
+                          isForStorage: false,
+                          isForRemovePhoto: true) // for Remove
+                      : const Offstage()
+                ],
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   ///Show dialog
-  Widget buildDialogOption(int index,
-      {bool isForStorage = true, bool isForRemovePhoto = false}) {
+  Widget buildDialogOption(
+    int index, {
+    bool isForStorage = true,
+    bool isForRemovePhoto = false,
+  }) {
     return TextButton(
-        onPressed: () {
-          dismissDialog();
-          isForRemovePhoto
-              ? widget._imageListBloc.dispatchRemovePhotoEvent(index)
-              : widget._imageListBloc.add(
-                  CheckPermissionEvent(
-                    true,
-                    isForStorage
-                        ? PermissionType.storage
-                        : PermissionType.camera,
-                    index,
-                  ),
-                );
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 16),
-                child: Icon(
-                  isForRemovePhoto
-                      ? Icons.clear
-                      : isForStorage
-                          ? Icons.photo_album
-                          : Icons.add_a_photo,
-                  color: isForRemovePhoto
-                      ? Colors.red
-                      : isForStorage
-                          ? Colors.amber
-                          : Colors.blue,
+      onPressed: () {
+        dismissDialog();
+        isForRemovePhoto
+            ? widget.imageListBloc.dispatchRemovePhotoEvent(index)
+            : widget.imageListBloc.add(
+                CheckPermissionEvent(
+                  true,
+                  isForStorage ? PermissionType.storage : PermissionType.camera,
+                  index,
                 ),
+              );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Icon(
+                isForRemovePhoto
+                    ? Icons.clear
+                    : isForStorage
+                        ? Icons.photo_album
+                        : Icons.add_a_photo,
+                color: isForRemovePhoto
+                    ? Colors.red
+                    : isForStorage
+                        ? Colors.amber
+                        : Colors.blue,
               ),
-              Text(isForRemovePhoto
+            ),
+            Text(
+              isForRemovePhoto
                   ? "Remove"
                   : isForStorage
                       ? "Gallery"
-                      : "Camera")
-            ],
-          ),
-        ));
+                      : "Camera",
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   ///Dismiss dialog
-  dismissDialog() {
+  void dismissDialog() {
     Navigator.of(context, rootNavigator: true).pop(true);
   }
 
@@ -222,7 +239,7 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
   /// @param isForCrossAxis = if from cross axis count = true
   /// Note:- If row == column then crossAxisCount = row*column // rowCount or columnCount
   /// e.g. row = 3 and column = 3 then crossAxisCount = 3*3(9) or 3
-  getCellCount(
+  int getCellCount(
       {required int index,
       required bool isForCrossAxis,
       required CollageType type}) {
@@ -339,39 +356,42 @@ class _GridCollageWidgetState extends State<GridCollageWidget> {
       } else {
         return (index == 1) ? 12 : 4;
       }
+    } else {
+      return 0;
     }
   }
 
   ///Show image picker dialog
-  imagePickerDialog(int index) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  buildDialogOption(index, isForStorage: false),
-                  buildDialogOption(index),
-                  (widget._imageListBloc.state as ImageListState)
-                              .images[index]
-                              .imageUrl !=
-                          null
-                      ? buildDialogOption(index, isForRemovePhoto: true)
-                      : Container(),
-                ],
-              ),
+  Future<void> imagePickerDialog(int index) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                buildDialogOption(index, isForStorage: false),
+                buildDialogOption(index),
+                (widget.imageListBloc.state as ImageListState)
+                            .images[index]
+                            .imageUrl !=
+                        null
+                    ? buildDialogOption(index, isForRemovePhoto: true)
+                    : Container(),
+              ],
             ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  dismissDialog();
-                },
-                child: const Text("Cancel"),
-              )
-            ],
-          );
-        });
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                dismissDialog();
+              },
+              child: const Text("Cancel"),
+            )
+          ],
+        );
+      },
+    );
   }
 }

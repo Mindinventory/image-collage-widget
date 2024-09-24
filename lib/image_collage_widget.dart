@@ -19,13 +19,14 @@ class ImageCollageWidget extends StatefulWidget {
   final List<Images>? images;
   final EdgeInsetsGeometry? gridPadding;
 
-  const ImageCollageWidget(
-      {super.key,
-      this.filePath,
-      required this.collageType,
-      required this.withImage,
-      this.images,
-      this.gridPadding});
+  const ImageCollageWidget({
+    super.key,
+    this.filePath,
+    required this.collageType,
+    required this.withImage,
+    this.images,
+    this.gridPadding,
+  });
 
   @override
   State<StatefulWidget> createState() => _ImageCollageWidget();
@@ -49,10 +50,11 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
 
     WidgetsBinding.instance.addObserver(this);
     _imageListBloc = CollageBloc(
-        context: context,
-        path: _filePath,
-        collageType: _collageType,
-        listOfImages: images);
+      context: context,
+      path: _filePath,
+      collageType: _collageType,
+      listOfImages: images,
+    );
     _imageListBloc.add(ImageListEvent(_imageListBloc.blankList()));
   }
 
@@ -79,9 +81,12 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
                       "To show images you have to allow storage permission."),
                   TextButton(
                     style: ButtonStyle(
-                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)))),
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    ),
                     child: const Text("Allow"),
                     onPressed: () => _handlePermission(),
                   ),
@@ -113,8 +118,8 @@ class _ImageCollageWidget extends State<ImageCollageWidget>
     return AspectRatio(
       aspectRatio: 1.0 / 1.0,
       child: GridCollageWidget(
-        _collageType,
-        _imageListBloc,
+        collageType: _collageType,
+        imageListBloc: _imageListBloc,
         images: images,
         gridPadding: widget.gridPadding,
       ),
